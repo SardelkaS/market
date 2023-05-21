@@ -22,8 +22,13 @@ auth:
 ```
 
 ## Run
+### Simple
 ```
 go run cmd/api/main.go
+```
+### Docker-compose
+```
+docker-compose up --build -d --no-deps
 ```
 
 ## API Documentation
