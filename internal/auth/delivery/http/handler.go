@@ -52,9 +52,8 @@ func (h httpHandler) SignUp() fiber.Handler {
 			return ctx.SendStatus(fiber.StatusUnauthorized)
 		}
 		response, err := h.uc.SignUp(auth_model.SignUpLogicInput{
-			Login:      body.Login,
-			Password:   body.Password,
-			InviteCode: body.InviteCode,
+			Login:    body.Login,
+			Password: body.Password,
 		})
 		if err != nil {
 			return ctx.SendStatus(fiber.StatusUnauthorized)

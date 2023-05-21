@@ -10,8 +10,8 @@ type Basket struct {
 }
 
 type BasketProductInfo struct {
-	Count   *int64
-	Product *product_model.ProductInfo
+	Count   *int64                     `json:"count"`
+	Product *product_model.ProductInfo `json:"product"`
 }
 
 type BasketInfo struct {

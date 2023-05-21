@@ -25,3 +25,6 @@ auth:
 ```
 go run cmd/api/main.go
 ```
+
+## API Documentation
+https://documenter.getpostman.com/view/25451223/2s93m32NXq

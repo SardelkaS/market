@@ -27,6 +27,7 @@ type FetchProductsInput struct {
 	MinPrice      *float64
 	MaxPrice      *float64
 	Show          *bool
+	Like          *bool
 	Sort          *string
 	Limit         *int64
 	Offset        *int64

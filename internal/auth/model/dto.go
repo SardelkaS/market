@@ -49,7 +49,6 @@ type ValidateBody struct {
 }
 
 type SignUpBody struct {
-	Login      string `json:"login"`
-	Password   string `json:"password"`
-	InviteCode string `json:"invite_code"`
+	Login    string `json:"login"`
+	Password string `json:"password"`
 }
