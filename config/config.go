@@ -28,11 +28,6 @@ type Config struct {
 		AccessLifeTime  int64  `yaml:"access_life_time"`
 		Secret          string `yaml:"secret"`
 	} `yaml:"auth"`
-	Api struct {
-		Url        string `yaml:"url"`
-		ApiPublic  string `yaml:"api_public"`
-		ApiPrivate string `yaml:"api_private"`
-	}
 }
 
 func LoadConfig(path string) (*Config, error) {

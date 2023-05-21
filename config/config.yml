@@ -15,7 +15,3 @@ auth:
   refresh_life_time: 30
   access_life_time: 10
   secret: 'testCat'
-api:
-  url: 'test'
-  api_public: 'public'
-  api_private: 'private'
