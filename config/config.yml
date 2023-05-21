@@ -1,0 +1,21 @@
+service:
+  host: 'localhost'
+  port: '7732'
+postgres:
+  host: 'localhost'
+  port: '5876'
+  user: 'postgres'
+  password: 'TestPwd'
+  db_name: 'market_auth'
+redis:
+  host: 'localhost'
+  port: '6383'
+  password: 'TestPwd'
+auth:
+  refresh_life_time: 30
+  access_life_time: 10
+  secret: 'testCat'
+api:
+  url: 'test'
+  api_public: 'public'
+  api_private: 'private'
