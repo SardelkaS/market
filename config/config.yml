@@ -9,7 +9,7 @@ postgres:
   db_name: 'market_auth'
 redis:
   host: 'localhost'
-  port: '6383'
+  port: '6387'
   password: 'TestPwd'
 auth:
   refresh_life_time: 30

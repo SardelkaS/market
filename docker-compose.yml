@@ -1,17 +1,17 @@
 version: '2'
 
 services:
-  market_auth_service:
+  market_service:
     ports:
       - "7732:7732"
     build:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
-    container_name: auth_service
-  market_auth_postgres:
+    container_name: market_service
+  market_postgres:
     image: postgres:latest
-    container_name: auth_postgres
+    container_name: market_postgres
     ports:
       - "5876:5432"
     environment:
@@ -19,9 +19,10 @@ services:
       - POSTGRES_DB=market_auth
       - POSTGRES_PASSWORD=TestPwd
     restart: unless-stopped
-  market_auth_redis:
+  market_redis:
     image: redis:6.2-alpine
+    container_name: market_redis
     restart: always
     ports:
-      - '6383:6379'
+      - '6387:6379'
     command: redis-server --save 20 1 --loglevel warning --requirepass TestPwd
