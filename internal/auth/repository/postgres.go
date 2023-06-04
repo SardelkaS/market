@@ -19,7 +19,7 @@ func NewPostgresRepo(db *sqlx.DB) auth.Repository {
 
 func (p postgres) GetUserByName(name string) (*auth_model.User, error) {
 	var result auth_model.User
-	err := p.db.Get(&result, `SELECT * from "auth" WHERE login = $1`, name)
+	err := p.db.Get(&result, `SELECT * from "user" WHERE login = $1`, name)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (p postgres) GetUserByName(name string) (*auth_model.User, error) {
 
 func (p postgres) GetUserById(id int64) (*auth_model.User, error) {
 	var result auth_model.User
-	err := p.db.Get(&result, `SELECT * from "auth" WHERE id = $1`, id)
+	err := p.db.Get(&result, `SELECT * from "user" WHERE id = $1`, id)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (p postgres) GetUserById(id int64) (*auth_model.User, error) {
 
 func (p postgres) GetUserByInternalId(internalId string) (*auth_model.User, error) {
 	var result auth_model.User
-	err := p.db.Get(&result, `SELECT * from "auth" WHERE internal_id = $1`, internalId)
+	err := p.db.Get(&result, `SELECT * from "user" WHERE internal_id = $1`, internalId)
 	if err != nil {
 		return nil, err
 	}
@@ -45,11 +45,8 @@ func (p postgres) GetUserByInternalId(internalId string) (*auth_model.User, erro
 }
 
 func (p postgres) InsertUser(user auth_model.User) error {
-	res, err := p.db.Query(`INSERT INTO "auth"(login, password, user_role, internal_id, ban) values($1, $2, $3, $4, $5)`,
+	_, err := p.db.Exec(`INSERT INTO "user"("login", "password", user_role, internal_id, ban, "timezone") values($1, $2, $3, $4, $5, $6)`,
 		user.Login, user.Password, user.Role, user.InternalId, user.Ban, user.Timezone)
-	if res != nil {
-		_ = res.Close()
-	}
 	if err != nil {
 		return err
 	}
@@ -57,7 +54,7 @@ func (p postgres) InsertUser(user auth_model.User) error {
 }
 
 func (p postgres) UpdatePassword(input auth_model.UpdatePasswordGatewayInput) error {
-	res, err := p.db.Query(`UPDATE "auth" SET password = $1 WHERE id = $2`, input.HashedPassword, input.UserId)
+	res, err := p.db.Query(`UPDATE "user" SET "password" = $1 WHERE id = $2`, input.HashedPassword, input.UserId)
 	if err != nil {
 		return err
 	}
@@ -65,7 +62,7 @@ func (p postgres) UpdatePassword(input auth_model.UpdatePasswordGatewayInput) er
 }
 
 func (p postgres) UpdateTimezone(input auth_model.UpdateTimezoneGatewayInput) error {
-	res, err := p.db.Query(`UPDATE "auth" SET timezone=$1 WHERE id=$2`, input.NewTimezone, input.UserId)
+	res, err := p.db.Query(`UPDATE "user" SET "timezone"=$1 WHERE id=$2`, input.NewTimezone, input.UserId)
 	if err != nil {
 		return err
 	}

@@ -83,6 +83,8 @@ func (h *httpServer) MapHandlers(app *internal.App) error {
 	orderHandler := order_http.NewHttpHandler(app.UC["order"].(order.UC), app.UC["product"].(product.UC), reqReader)
 	productHandler := product_http.NewHttpHandler(app.UC["product"].(product.UC), reqReader)
 
+	authHttp.MapRoutes(h.fiber, authHandler)
+
 	basketGroup := h.fiber.Group("/basket")
 	basket_http.MapRoutes(basketGroup, authHandler, basketHandler)
 

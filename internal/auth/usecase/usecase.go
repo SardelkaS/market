@@ -105,10 +105,12 @@ func (u *uc) SignUp(params auth_model.SignUpLogicInput) (*auth_model.SignUpToken
 
 	ban := false
 	defaultTimezone := "UTC"
+	defaultRole := "user"
 	err = u.repo.InsertUser(auth_model.User{
 		Login:      &params.Login,
 		Password:   &passwordHash,
 		InternalId: &internalId,
+		Role:       &defaultRole,
 		Ban:        &ban,
 		Timezone:   &defaultTimezone,
 	})
