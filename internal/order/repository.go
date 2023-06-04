@@ -1,6 +1,9 @@
 package order
 
-import order_model "market_auth/internal/order/model"
+import (
+	order_model "market_auth/internal/order/model"
+	product_model "market_auth/internal/product/model"
+)
 
 type Repository interface {
 	CreateOrder(input order_model.Order) (*int64, error)
@@ -17,7 +20,7 @@ type Repository interface {
 	GetOrdersCount(input order_model.FetchOrdersGatewayInput) (*int64, error)
 	GetOrderByInternalId(internalId string) (*order_model.Order, error)
 	GetOrderById(id int64) (*order_model.Order, error)
-	FetchOrderProducts(input order_model.FetchOrderProductsGatewayInput) ([]order_model.OrderProduct, error)
+	FetchOrderProducts(input order_model.FetchOrderProductsGatewayInput) ([]product_model.Product, error)
 	GetOrderProductsCount(input order_model.FetchOrderProductsGatewayInput) (*int64, error)
 	GetOrdersInfo(ids []int64) ([]order_model.OrderInfo, error)
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"market_auth/internal/order"
 	order_model "market_auth/internal/order/model"
+	product_model "market_auth/internal/product/model"
 )
 
 type postgres struct {
@@ -110,21 +111,28 @@ func (p *postgres) GetOrderById(id int64) (*order_model.Order, error) {
 	return &result, nil
 }
 
-func (p *postgres) FetchOrderProducts(input order_model.FetchOrderProductsGatewayInput) ([]order_model.OrderProduct, error) {
-	var result []order_model.OrderProduct
-	err := p.db.Select(&result, `select * from order_products where order_id = $1 limit $2 offset $3`, input.OrderId, input.Limit, input.Offset)
+func (p *postgres) FetchOrderProducts(input order_model.FetchOrderProductsGatewayInput) ([]product_model.Product, error) {
+	var result []product_model.Product
+	err := p.db.Select(&result, `
+	select p.* from product p
+        left join order_products op on op.product_id = p.id
+	       where order_id = $1 limit $2 offset $3`,
+		input.OrderId, input.Limit, input.Offset)
 	if err != nil {
 		return nil, err
 	}
 	if len(result) == 0 {
-		return []order_model.OrderProduct{}, nil
+		return []product_model.Product{}, nil
 	}
 	return result, nil
 }
 
 func (p *postgres) GetOrderProductsCount(input order_model.FetchOrderProductsGatewayInput) (*int64, error) {
 	var result int64
-	err := p.db.Get(&result, `select count(*) from order_products where order_id = $1`, input.OrderId)
+	err := p.db.Get(&result, `
+select count(p.*) from product p
+        left join order_products op on op.product_id = p.id
+	       where order_id = $1`, input.OrderId)
 	if err != nil {
 		return nil, err
 	}

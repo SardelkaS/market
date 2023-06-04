@@ -32,4 +32,5 @@ type ProductInfo struct {
 	BuyCount     *int64         `json:"buy_count" db:"buy_count"`
 	Show         *bool          `json:"show" db:"show"`
 	Stars        *int64         `json:"stars" db:"stars"`
+	Liked        *bool          `json:"liked" db:"liked"`
 }

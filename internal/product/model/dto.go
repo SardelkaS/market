@@ -22,13 +22,23 @@ type InsertCategoryBody struct {
 }
 
 type FetchProductsInput struct {
-	Category      *string
-	Manufacturers []string
-	MinPrice      *float64
-	MaxPrice      *float64
-	Show          *bool
-	Like          *bool
-	Sort          *string
-	Limit         *int64
-	Offset        *int64
+	UserId        *int64   `query:"user_id"`
+	Category      *string  `query:"category"`
+	Manufacturers []string `query:"manufacturers"`
+	MinPrice      *float64 `query:"min_price"`
+	MaxPrice      *float64 `query:"max_price"`
+	Show          *bool    `query:"show"`
+	Like          *bool    `query:"like"`
+	Sort          *string  `query:"sort"`
+	Limit         *int64   `query:"limit"`
+	Offset        *int64   `query:"offset"`
+}
+
+type FetchProductsResponse struct {
+	Products []ProductInfo
+	Count    *int64
+}
+
+type UpdateProductCountBody struct {
+	Count int64 `json:"count"`
 }

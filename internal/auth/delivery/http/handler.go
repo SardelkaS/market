@@ -155,8 +155,8 @@ func (h httpHandler) ValidateAccessToken() fiber.Handler {
 		if err != nil {
 			return failure.ErrAuth
 		}
-		ctx.Request().Header.Set("Role", *result.Role)
-		ctx.Request().Header.Set("UserId", fmt.Sprint(*result.UserId))
+		ctx.Request().Header.Set("role", *result.Role)
+		ctx.Request().Header.Set("user_id", fmt.Sprint(*result.UserId))
 		return ctx.Next()
 	}
 }
@@ -173,8 +173,8 @@ func (h httpHandler) ValidateRefreshToken() fiber.Handler {
 		if err != nil {
 			return failure.ErrAuth
 		}
-		ctx.Request().Header.Set("Role", *result.Role)
-		ctx.Request().Header.Set("UserId", fmt.Sprint(*result.UserId))
+		ctx.Request().Header.Set("role", *result.Role)
+		ctx.Request().Header.Set("user_id", fmt.Sprint(*result.UserId))
 		return ctx.Next()
 	}
 }

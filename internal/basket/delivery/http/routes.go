@@ -7,9 +7,9 @@ import (
 )
 
 func MapRoutes(r fiber.Router, mw auth.HttpHandler, h basket.HttpHandler) {
-	r.Post("/product", mw.ValidateAccessToken())
-	r.Put("/incr", mw.ValidateAccessToken())
-	r.Put("/decr", mw.ValidateAccessToken())
-	r.Delete("/clear", mw.ValidateAccessToken())
-	r.Get("/", mw.ValidateAccessToken())
+	r.Post("/product", mw.ValidateAccessToken(), h.AddProduct())
+	r.Put("/incr", mw.ValidateAccessToken(), h.IncrementCount())
+	r.Put("/decr", mw.ValidateAccessToken(), h.DecrementCount())
+	r.Delete("/clear", mw.ValidateAccessToken(), h.Clear())
+	r.Get("/", mw.ValidateAccessToken(), h.GetBasket())
 }

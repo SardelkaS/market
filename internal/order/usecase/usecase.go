@@ -280,3 +280,18 @@ func (u *uc) FetchOrderProducts(input order_model.FetchOrderProductsParams) (*or
 		Count:    count,
 	}, nil
 }
+
+func (u *uc) GetOrdersInfo(orders []order_model.Order) ([]order_model.OrderInfo, error) {
+	var ids []int64
+	for _, orderData := range orders {
+		ids = append(ids, *orderData.Id)
+	}
+
+	ordersInfo, err := u.repo.GetOrdersInfo(ids)
+	if err != nil {
+		fmt.Printf("Error to get orders (%v) info: %s", ids, err.Error())
+		return nil, fmt.Errorf("error to get orders info")
+	}
+
+	return ordersInfo, nil
+}

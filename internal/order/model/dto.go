@@ -1,7 +1,9 @@
 package order_model
 
+import product_model "market_auth/internal/product/model"
+
 type CreateOrderBody struct {
-	UserId      *int64         `json:"user_id"`
+	UserId      *int64         `json:"-"`
 	Address     *string        `json:"address"`
 	ContactData *string        `json:"contact_data"`
 	Products    []ProductsBody `json:"products"`
@@ -14,6 +16,7 @@ type ProductsBody struct {
 
 type AttachProductBody struct {
 	OrderId  *string `json:"-"`
+	UserId   *int64  `json:"-"`
 	Products []ProductsBody
 }
 
@@ -29,6 +32,11 @@ type FetchOrdersResult struct {
 	Count  *int64
 }
 
+type FetchOrdersResponse struct {
+	Orders []OrderInfo `json:"orders"`
+	Count  *int64      `json:"count"`
+}
+
 type FetchOrderProductsParams struct {
 	OrderId *string
 	UserId  *int64
@@ -37,7 +45,12 @@ type FetchOrderProductsParams struct {
 }
 
 type FetchOrderProductsResult struct {
-	Products []OrderProduct
+	Products []product_model.Product
+	Count    *int64
+}
+
+type FetchOrderProductsResponse struct {
+	Products []product_model.ProductInfo
 	Count    *int64
 }
 
