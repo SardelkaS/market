@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"market_auth/api/http"
 	"market_auth/config"
 	"market_auth/internal"
-	"market_auth/internal/server"
 	"market_auth/migrations"
 )
 
@@ -18,12 +17,12 @@ func main() {
 		panic(err)
 	}
 	app := internal.NewApp(cfg)
-	fmt.Println(app)
-	httpServer := server.NewHttpServer(cfg)
 	err = app.Init()
 	if err != nil {
 		panic(err)
 	}
+
+	httpServer := http.NewHttpServer(cfg)
 	err = httpServer.Init()
 	if err != nil {
 		panic(err)

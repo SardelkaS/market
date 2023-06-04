@@ -8,8 +8,9 @@ import (
 
 type Config struct {
 	Service struct {
-		Host string `yaml:"host"`
-		Port string `yaml:"port"`
+		Host    string `yaml:"host"`
+		Port    string `yaml:"port"`
+		Version string `yaml:"version"`
 	} `yaml:"service"`
 	Postgres struct {
 		Host     string `yaml:"host"`

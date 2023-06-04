@@ -3,11 +3,18 @@ package internal
 import (
 	"github.com/jmoiron/sqlx"
 	"market_auth/config"
-	"market_auth/internal/api"
 	"market_auth/internal/auth"
 	auth_repository "market_auth/internal/auth/repository"
 	auth_usecase "market_auth/internal/auth/usecase"
-	proxy_usecase "market_auth/internal/proxy/usecase"
+	"market_auth/internal/basket"
+	basket_repository "market_auth/internal/basket/repository"
+	basket_usecase "market_auth/internal/basket/usecase"
+	"market_auth/internal/order"
+	order_repository "market_auth/internal/order/repository"
+	order_usecase "market_auth/internal/order/usecase"
+	"market_auth/internal/product"
+	product_repository "market_auth/internal/product/repository"
+	product_usecase "market_auth/internal/product/usecase"
 	"market_auth/pkg/db"
 	"market_auth/pkg/logger"
 )
@@ -39,10 +46,14 @@ func (a *App) Init() error {
 
 	a.Repo["authPostgres"] = auth_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
 	a.Repo["authRedis"] = auth_repository.NewRedisClient(a.cfg, a.UC["logger"].(logger.UC))
+	a.Repo["basket"] = basket_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
+	a.Repo["order"] = order_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
+	a.Repo["product"] = product_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
 
 	a.UC["auth"] = auth_usecase.NewUC(a.Repo["authPostgres"].(auth.Repository), a.Repo["authRedis"].(auth.CacheRepository), a.cfg, a.UC["logger"].(logger.UC))
-	a.UC["api"] = api.New(a.cfg)
-	a.UC["proxy"] = proxy_usecase.New(a.UC["auth"].(auth.UC), a.UC["api"].(api.UC), a.UC["logger"].(logger.UC))
+	a.UC["basket"] = basket_usecase.New(a.Repo["basket"].(basket.Repository), a.Repo["product"].(product.Repository))
+	a.UC["order"] = order_usecase.New(a.Repo["order"].(order.Repository), a.Repo["product"].(product.Repository))
+	a.UC["product"] = product_usecase.New(a.Repo["product"].(product.Repository))
 
 	return nil
 }
