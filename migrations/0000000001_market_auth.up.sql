@@ -18,15 +18,6 @@ create table if not exists public."manufacturer" (
     "name" text not null
 );
 
-create table if not exists public."feedback" (
-    id bigserial primary key,
-    user_id bigint not null references "user"(id),
-    product_id bigint not null references product(id),
-    stars bigint not null default 5 check (stars > 0 and stars < 6),
-    "message" text,
-    pictures text[]
-);
-
 create table if not exists public."product" (
     id bigserial primary key,
     internal_id text not null unique,
@@ -38,6 +29,15 @@ create table if not exists public."product" (
     description text,
     pictures text[],
     "show" bool not null default false
+);
+
+create table if not exists public."feedback" (
+                                                 id bigserial primary key,
+                                                 user_id bigint not null references "user"(id),
+                                                 product_id bigint not null references product(id),
+                                                 stars bigint not null default 5 check (stars > 0 and stars < 6),
+                                                 "message" text,
+                                                 pictures text[]
 );
 
 create table if not exists public."like_product" (
