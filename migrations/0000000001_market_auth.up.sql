@@ -1,4 +1,4 @@
-create table public."user"(
+create table if not exists public."user"(
     id bigserial primary key,
     "login" text unique not null,
     "password" text not null,
@@ -8,19 +8,17 @@ create table public."user"(
     "timezone" text not null
 );
 
-alter table "user" add column "timezone" text not null;
-
-create table public."category" (
+create table if not exists public."category" (
     id bigserial primary key,
     "name" text not null
 );
 
-create table public."manufacturer" (
+create table if not exists public."manufacturer" (
     id bigserial primary key,
     "name" text not null
 );
 
-create table public."feedback" (
+create table if not exists public."feedback" (
     id bigserial primary key,
     user_id bigint not null references "user"(id),
     product_id bigint not null references product(id),
@@ -29,7 +27,7 @@ create table public."feedback" (
     pictures text[]
 );
 
-create table public."product" (
+create table if not exists public."product" (
     id bigserial primary key,
     internal_id text not null unique,
     "name" text not null,
@@ -42,31 +40,31 @@ create table public."product" (
     "show" bool not null default false
 );
 
-create table public."like_product" (
+create table if not exists public."like_product" (
     id bigserial primary key,
     product_id bigint not null references product(id),
     user_id bigint not null references "user"(id)
 );
 
-create table public."product_category" (
+create table if not exists public."product_category" (
     id bigserial primary key,
     product_id bigint not null references product(id),
     category_id bigint not null references category(id)
 );
 
-create table public."basket" (
+create table if not exists public."basket" (
     id bigserial primary key,
     user_id bigint not null unique references "user"(id),
     product_id bigint not null references product(id),
     count bigint not null default 1 check (count >= 0)
 );
 
-create table public."order_status" (
+create table if not exists public."order_status" (
     id bigserial primary key,
     "name" text not null unique
 );
 
-create table public."order" (
+create table if not exists public."order" (
     id bigserial primary key,
     internal_id text unique not null,
     user_id bigint not null references "user"(id),
@@ -78,7 +76,7 @@ create table public."order" (
     complete_time timestamp
 );
 
-create table public."order_products" (
+create table if not exists public."order_products" (
     id bigserial primary key,
     order_id bigint not null references "order"(id),
     product_id bigint not null references product(id),
