@@ -357,7 +357,7 @@ func (h httpHandler) FetchOrderProducts() fiber.Handler {
 			return err
 		}
 
-		realResult, err := h.productUC.GetProductsInfo(rawResult.Products)
+		realResult, err := h.productUC.GetProductsInfo(rawResult.Products, &userId)
 		if err != nil {
 			return err
 		}

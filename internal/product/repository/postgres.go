@@ -182,7 +182,7 @@ func (p *postgres) UnlikeProduct(productId int64, userId int64) error {
 	return err
 }
 
-func (p *postgres) GetProductsInfo(ids []int64) ([]product_model.ProductInfo, error) {
+func (p *postgres) GetProductsInfo(ids []int64, userId *int64) ([]product_model.ProductInfo, error) {
 	var result []product_model.ProductInfo
 	err := p.db.Select(&result, `
 				select 
@@ -198,11 +198,12 @@ func (p *postgres) GetProductsInfo(ids []int64) ([]product_model.ProductInfo, er
 				    p.pictures,
 				    p.buy_count,
 				    p.show,
-				    (select coalesce(avg(f.stars), 0) from feedback f where f.product_id = p.id) as stars
+				    (select coalesce(avg(f.stars), 0) from feedback f where f.product_id = p.id) as stars,
+				    (select count(*) from like_product where user_id = $2) > 0 as liked
 					from product p
 						left join manufacturer m on p.manufacturer_id = m.id
 							where p.id = any($1)
-						order by array_position($1, p.id)`, pq.Array(ids))
+						order by array_position($1, p.id)`, pq.Array(ids), userId)
 	if err != nil {
 		return nil, err
 	}

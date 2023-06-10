@@ -11,6 +11,7 @@ type HttpHandler interface {
 	ChangePassword() fiber.Handler
 	ChangeTimezone() fiber.Handler
 
+	ValidateAdminRole() fiber.Handler
 	ValidateAccessToken() fiber.Handler
 	ValidateRefreshToken() fiber.Handler
 	NoMW() fiber.Handler

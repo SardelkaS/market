@@ -23,5 +23,5 @@ type Repository interface {
 	LikeProduct(productId int64, userId int64) error
 	UnlikeProduct(productId int64, userId int64) error
 
-	GetProductsInfo(ids []int64) ([]product_model.ProductInfo, error)
+	GetProductsInfo(ids []int64, userId *int64) ([]product_model.ProductInfo, error)
 }

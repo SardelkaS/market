@@ -127,7 +127,7 @@ func (h httpHandler) FetchProducts() fiber.Handler {
 			return err
 		}
 
-		realResult, err := h.uc.GetProductsInfo(rawResult)
+		realResult, err := h.uc.GetProductsInfo(rawResult, &userId)
 		if err != nil {
 			return err
 		}
@@ -149,6 +149,11 @@ func (h httpHandler) GetProduct() fiber.Handler {
 			return failure.ErrInput
 		}
 
+		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
+		if err != nil {
+			return failure.ErrToGetUser
+		}
+
 		rawResult, err := h.uc.GetProduct(productId)
 		if err != nil {
 			return err
@@ -157,7 +162,7 @@ func (h httpHandler) GetProduct() fiber.Handler {
 			return fmt.Errorf("error to get product")
 		}
 
-		realResult, err := h.uc.GetProductsInfo([]product_model.Product{*rawResult})
+		realResult, err := h.uc.GetProductsInfo([]product_model.Product{*rawResult}, &userId)
 		if err != nil {
 			return err
 		}

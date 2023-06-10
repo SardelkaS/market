@@ -86,14 +86,14 @@ func (u *uc) GetBasket(userId int64) ([]basket_model.Basket, error) {
 	return result, nil
 }
 
-func (u *uc) GetBasketInfo(rawData []basket_model.Basket) (*basket_model.BasketInfo, error) {
+func (u *uc) GetBasketInfo(rawData []basket_model.Basket, userId *int64) (*basket_model.BasketInfo, error) {
 	if len(rawData) == 0 {
 		return nil, nil
 	}
 
 	var products []basket_model.BasketProductInfo
 	for _, data := range rawData {
-		productData, err := u.productRepo.GetProductsInfo([]int64{*data.ProductId})
+		productData, err := u.productRepo.GetProductsInfo([]int64{*data.ProductId}, userId)
 		if err != nil {
 			fmt.Printf("Error to get product %d data: %s\n", *data.ProductId, err.Error())
 			return nil, fmt.Errorf("error to get basket")

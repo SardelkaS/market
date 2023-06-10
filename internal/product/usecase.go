@@ -19,5 +19,5 @@ type UC interface {
 	HideProduct(internalId string) error
 	UpdateProductCount(internalId string, count int64) error
 
-	GetProductsInfo(input []product_model.Product) ([]product_model.ProductInfo, error)
+	GetProductsInfo(input []product_model.Product, userId *int64) ([]product_model.ProductInfo, error)
 }

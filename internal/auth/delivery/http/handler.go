@@ -11,6 +11,8 @@ import (
 	"market_auth/pkg/utils"
 )
 
+const _adminRole = "admin"
+
 type httpHandler struct {
 	uc     auth.UC
 	logger logger.UC
@@ -140,6 +142,20 @@ func (h httpHandler) ChangeTimezone() fiber.Handler {
 		return ctx.Status(fiber.StatusOK).JSON(common.Response{
 			Status: common.SuccessStatus,
 		})
+	}
+}
+
+func (h httpHandler) ValidateAdminRole() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		role := ctx.Get("role")
+		if role != _adminRole {
+			return ctx.Status(fiber.StatusForbidden).JSON(common.Response{
+				Status:      common.FailedStatus,
+				Description: "permission denied",
+			})
+		}
+
+		return ctx.Next()
 	}
 }
 

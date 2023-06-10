@@ -10,5 +10,5 @@ type UC interface {
 	ClearBasket(userId int64) error
 
 	GetBasket(userId int64) ([]basket_model.Basket, error)
-	GetBasketInfo(rawData []basket_model.Basket) (*basket_model.BasketInfo, error)
+	GetBasketInfo(rawData []basket_model.Basket, userId *int64) (*basket_model.BasketInfo, error)
 }

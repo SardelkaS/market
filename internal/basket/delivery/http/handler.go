@@ -124,7 +124,7 @@ func (h httpHandler) GetBasket() fiber.Handler {
 			return err
 		}
 
-		realResult, err := h.uc.GetBasketInfo(rawResult)
+		realResult, err := h.uc.GetBasketInfo(rawResult, &userId)
 		if err != nil {
 			return err
 		}

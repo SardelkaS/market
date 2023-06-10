@@ -200,13 +200,13 @@ func (u *uc) UpdateProductCount(internalId string, count int64) error {
 	return nil
 }
 
-func (u *uc) GetProductsInfo(input []product_model.Product) ([]product_model.ProductInfo, error) {
+func (u *uc) GetProductsInfo(input []product_model.Product, userId *int64) ([]product_model.ProductInfo, error) {
 	var ids []int64
 	for _, productData := range input {
 		ids = append(ids, *productData.Id)
 	}
 
-	result, err := u.repo.GetProductsInfo(ids)
+	result, err := u.repo.GetProductsInfo(ids, userId)
 	if err != nil {
 		fmt.Printf("Error to get products info: %s", err.Error())
 		return nil, fmt.Errorf("error to get products info")
