@@ -199,7 +199,8 @@ func (p *postgres) GetProductsInfo(ids []int64, userId *int64) ([]product_model.
 				    p.buy_count,
 				    p.show,
 				    (select coalesce(avg(f.stars), 0) from feedback f where f.product_id = p.id) as stars,
-				    (select count(*) from like_product where user_id = $2) > 0 as liked
+				    (select count(*) from like_product where user_id = $2) > 0 as liked,
+				    (select count(*) from feedback f where f.product_id = p.id) as feedbacks_count
 					from product p
 						left join manufacturer m on p.manufacturer_id = m.id
 							where p.id = any($1)

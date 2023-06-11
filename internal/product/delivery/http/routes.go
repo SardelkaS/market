@@ -11,10 +11,10 @@ func MapRoutes(r fiber.Router, mw auth.HttpHandler, h product.HttpHandler) {
 	r.Post("/manufacturer", mw.ValidateAccessToken(), mw.ValidateAdminRole(), h.InsertManufacturer())
 	r.Post("/category", mw.ValidateAccessToken(), mw.ValidateAdminRole(), h.InsertCategory())
 
-	r.Get("/category", mw.ValidateAccessToken(), h.FetchCategories())
-	r.Get("/manufacturer", mw.ValidateAccessToken(), h.FetchManufacturers())
-	r.Get("/", mw.ValidateAccessToken(), h.FetchProducts())
-	r.Get("/:internal_id", mw.ValidateAccessToken(), h.GetProduct())
+	r.Get("/category", h.FetchCategories())
+	r.Get("/manufacturer", h.FetchManufacturers())
+	r.Get("/", h.FetchProducts())
+	r.Get("/:internal_id", h.GetProduct())
 
 	r.Put("/:internal_id/like", mw.ValidateAccessToken(), h.LikeProduct())
 	r.Put("/:internal_id/unlike", mw.ValidateAccessToken(), h.UnlikeProduct())

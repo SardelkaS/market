@@ -7,6 +7,8 @@ import (
 	recoverMDW "github.com/gofiber/fiber/v2/middleware/recover"
 	"market_auth/internal/basket"
 	basket_http "market_auth/internal/basket/delivery/http"
+	"market_auth/internal/feedback"
+	feedback_http "market_auth/internal/feedback/delivery/http"
 	"market_auth/internal/order"
 	order_http "market_auth/internal/order/delivery/http"
 	"market_auth/internal/product"
@@ -82,6 +84,7 @@ func (h *httpServer) MapHandlers(app *internal.App) error {
 	basketHandler := basket_http.NewHttpHandler(app.UC["basket"].(basket.UC), reqReader)
 	orderHandler := order_http.NewHttpHandler(app.UC["order"].(order.UC), app.UC["product"].(product.UC), reqReader)
 	productHandler := product_http.NewHttpHandler(app.UC["product"].(product.UC), reqReader)
+	feedbackHandler := feedback_http.NewHttpHandler(app.UC["feedback"].(feedback.UC), reqReader)
 
 	authHttp.MapRoutes(h.fiber, authHandler)
 
@@ -93,6 +96,9 @@ func (h *httpServer) MapHandlers(app *internal.App) error {
 
 	productGroup := h.fiber.Group("/product")
 	product_http.MapRoutes(productGroup, authHandler, productHandler)
+
+	feedbackGroup := h.fiber.Group("/feedback")
+	feedback_http.MapRoutes(feedbackGroup, authHandler, feedbackHandler)
 
 	return nil
 }

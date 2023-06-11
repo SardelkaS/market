@@ -9,6 +9,9 @@ import (
 	"market_auth/internal/basket"
 	basket_repository "market_auth/internal/basket/repository"
 	basket_usecase "market_auth/internal/basket/usecase"
+	"market_auth/internal/feedback"
+	feedback_repository "market_auth/internal/feedback/repository"
+	feedback_usecase "market_auth/internal/feedback/usecase"
 	"market_auth/internal/order"
 	order_repository "market_auth/internal/order/repository"
 	order_usecase "market_auth/internal/order/usecase"
@@ -49,11 +52,13 @@ func (a *App) Init() error {
 	a.Repo["basket"] = basket_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
 	a.Repo["order"] = order_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
 	a.Repo["product"] = product_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
+	a.Repo["feedback"] = feedback_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
 
 	a.UC["auth"] = auth_usecase.NewUC(a.Repo["authPostgres"].(auth.Repository), a.Repo["authRedis"].(auth.CacheRepository), a.cfg, a.UC["logger"].(logger.UC))
 	a.UC["basket"] = basket_usecase.New(a.Repo["basket"].(basket.Repository), a.Repo["product"].(product.Repository))
 	a.UC["order"] = order_usecase.New(a.Repo["order"].(order.Repository), a.Repo["product"].(product.Repository))
 	a.UC["product"] = product_usecase.New(a.Repo["product"].(product.Repository))
+	a.UC["feedback"] = feedback_usecase.New(a.Repo["feedback"].(feedback.Repository), a.UC["product"].(product.UC))
 
 	return nil
 }

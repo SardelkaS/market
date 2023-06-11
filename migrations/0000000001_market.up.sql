@@ -32,12 +32,12 @@ create table if not exists public."product" (
 );
 
 create table if not exists public."feedback" (
-                                                 id bigserial primary key,
-                                                 user_id bigint not null references "user"(id),
-                                                 product_id bigint not null references product(id),
-                                                 stars bigint not null default 5 check (stars > 0 and stars < 6),
-                                                 "message" text,
-                                                 pictures text[]
+    id bigserial primary key,
+    user_id bigint not null references "user"(id),
+    product_id bigint not null references product(id),
+    stars bigint not null default 5 check (stars > 0 and stars < 6),
+    "message" text,
+    pictures text[]
 );
 
 create table if not exists public."like_product" (
