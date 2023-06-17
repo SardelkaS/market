@@ -9,6 +9,8 @@ type UC interface {
 
 	GenerateRefresh(params auth_model.GenerateRefreshLogicInput) (*auth_model.Token, error)
 
+	GetUserByFingerKey(fingerKey string) (*auth_model.User, error)
+
 	GetUser(input auth_model.GetUserLogicInput) (*auth_model.GetUserLogicOutput, error)
 
 	ValidateJWT(params auth_model.ValidateJWTLogicInput) (*auth_model.ValidateJWTLogicOutput, error)

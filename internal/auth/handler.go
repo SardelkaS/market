@@ -14,5 +14,6 @@ type HttpHandler interface {
 	ValidateAdminRole() fiber.Handler
 	ValidateAccessToken() fiber.Handler
 	ValidateRefreshToken() fiber.Handler
+	SetUser() fiber.Handler
 	NoMW() fiber.Handler
 }

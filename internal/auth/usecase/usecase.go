@@ -167,7 +167,7 @@ func (u *uc) ValidateJWT(params auth_model.ValidateJWTLogicInput) (*auth_model.V
 		return nil, failure.ErrAuth
 	}
 
-	userData, err := u.getUserByFingerKey(params.FingerKey)
+	userData, err := u.GetUserByFingerKey(params.FingerKey)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +216,7 @@ func (u *uc) GenerateRefresh(params auth_model.GenerateRefreshLogicInput) (*auth
 }
 
 func (u *uc) ChangePassword(input auth_model.ChangePasswordLogicInput) error {
-	userData, err := u.getUserByFingerKey(input.FingerKey)
+	userData, err := u.GetUserByFingerKey(input.FingerKey)
 	if err != nil {
 		return err
 	}
@@ -240,7 +240,7 @@ func (u *uc) ChangePassword(input auth_model.ChangePasswordLogicInput) error {
 }
 
 func (u *uc) ChangeTimezone(input auth_model.ChangeTimezoneLogicInput) error {
-	userData, err := u.getUserByFingerKey(input.FingerKey)
+	userData, err := u.GetUserByFingerKey(input.FingerKey)
 	if err != nil {
 		return err
 	}
@@ -255,7 +255,7 @@ func (u *uc) ChangeTimezone(input auth_model.ChangeTimezoneLogicInput) error {
 	return nil
 }
 
-func (u *uc) getUserByFingerKey(fingerKey string) (*auth_model.User, error) {
+func (u *uc) GetUserByFingerKey(fingerKey string) (*auth_model.User, error) {
 	data, err := u.redis.GetDataByFingerKey(auth_model.GetDataByFingerKeyGatewayInput{FingerKey: fingerKey})
 	if err != nil {
 		u.logger.Log(logger.Error, fmt.Sprintf("Get info for finger key %s from redis error: %s", fingerKey, err.Error()))
@@ -281,7 +281,7 @@ func (u *uc) GetUser(input auth_model.GetUserLogicInput) (*auth_model.GetUserLog
 	var err error
 
 	if input.FingerKey != nil {
-		userData, err = u.getUserByFingerKey(*input.FingerKey)
+		userData, err = u.GetUserByFingerKey(*input.FingerKey)
 		if err != nil {
 			return nil, err
 		}

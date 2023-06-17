@@ -117,10 +117,9 @@ func (h httpHandler) FetchProducts() fiber.Handler {
 		}
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
-		if err != nil {
-			return failure.ErrToGetUser
+		if err == nil {
+			params.UserId = &userId
 		}
-		params.UserId = &userId
 
 		rawResult, count, err := h.uc.FetchProducts(params)
 		if err != nil {

@@ -115,7 +115,8 @@ func (p *postgres) FetchProducts(input product_model.FetchProductsGatewayInput) 
 							and (p.price >= $3 or $3 is null)
 							and (p.price <= $4 or $4 is null)
 							and (p.show = $5 or $5 is null)
-							and (p.id = any(select lp.product_id from like_product lp where lp.user_id = $6) or $7 is null or $7 = false)`
+							and (p.id = any(select lp.product_id from like_product lp where lp.user_id = $6) 
+							         or cast($7 as bool) is null or cast($7 as bool) = false)`
 	if input.Sort != nil {
 		if *input.Sort == "price_asc" {
 			query += ` order by p.price asc`

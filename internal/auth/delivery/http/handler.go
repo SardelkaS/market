@@ -195,6 +195,27 @@ func (h httpHandler) ValidateRefreshToken() fiber.Handler {
 	}
 }
 
+func (h httpHandler) SetUser() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		fingerKey := ctx.Get("FingerKey", "")
+		if fingerKey == "" {
+			return ctx.Next()
+		}
+
+		userData, err := h.uc.GetUserByFingerKey(fingerKey)
+		if err != nil {
+			return ctx.Next()
+		}
+		if userData == nil || userData.Id == nil || userData.Role == nil {
+			return ctx.Next()
+		}
+
+		ctx.Request().Header.Set("role", *userData.Role)
+		ctx.Request().Header.Set("user_id", fmt.Sprint(*userData.Id))
+		return ctx.Next()
+	}
+}
+
 func (h httpHandler) NoMW() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		return c.Next()
