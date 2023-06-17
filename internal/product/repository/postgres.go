@@ -192,7 +192,7 @@ func (p *postgres) GetProductsInfo(ids []int64, userId *int64) ([]product_model.
 				    p.price,
 				    p.count,
 				    m.name as manufacturer,
-				    (select c."name" from "category" c 
+				    (select array_agg(c."name") from "category" c 
 				                   left join product_category pc on c.id = pc.category_id
 				                   		where pc.product_id = p.id) as categories,
 				    p.description,
