@@ -190,6 +190,7 @@ func (p *postgres) GetProductsInfo(ids []int64, userId *int64) ([]product_model.
 				    p.internal_id,
 				    p.name,
 				    p.price,
+				    p.old_price,
 				    p.count,
 				    m.name as manufacturer,
 				    (select array_agg(c."name") from "category" c 
@@ -201,7 +202,8 @@ func (p *postgres) GetProductsInfo(ids []int64, userId *int64) ([]product_model.
 				    p.show,
 				    (select coalesce(avg(f.stars), 0) from feedback f where f.product_id = p.id) as stars,
 				    (select count(*) from like_product where user_id = $2) > 0 as liked,
-				    (select count(*) from feedback f where f.product_id = p.id) as feedbacks_count
+				    (select count(*) from feedback f where f.product_id = p.id) as feedbacks_count,
+				    (select count(*) from basket b where b.user_id = $2 and b.product_id = p.id) > 0 as in_basket
 					from product p
 						left join manufacturer m on p.manufacturer_id = m.id
 							where p.id = any($1)

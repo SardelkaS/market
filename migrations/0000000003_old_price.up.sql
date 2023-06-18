@@ -1,0 +1,1 @@
+alter table product add column old_price float8 check(old_price > 0);
