@@ -150,7 +150,7 @@ func (h httpHandler) UpdateUserInfo() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		var body auth_model.UpdateUserInfoBody
 		if err := utils.ReadRequest(ctx, &body); err != nil {
-			h.logger.Log(logger.Error, fmt.Sprintf("change timezone request error: %v", err))
+			h.logger.Log(logger.Error, fmt.Sprintf("update user info request error: %v", err))
 			return failure.ErrInput
 		}
 
