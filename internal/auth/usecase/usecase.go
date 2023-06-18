@@ -309,3 +309,37 @@ func (u *uc) GetUser(input auth_model.GetUserLogicInput) (*auth_model.GetUserLog
 		Result: userData,
 	}, nil
 }
+
+func (u *uc) UpdateUserInfo(input auth_model.UpdateUserInfoBody) error {
+	if input.Id == nil {
+		return failure.ErrToGetUser
+	}
+
+	err := u.repo.UpdateUserInfo(auth_model.UpdateUserInfoGatewayInput{
+		Id:          input.Id,
+		Name:        input.Name,
+		Email:       input.Email,
+		PhoneNumber: input.PhoneNumber,
+		BirthDate:   input.BirthDate,
+		ContactData: input.ContactData,
+	})
+	if err != nil {
+		u.logger.Log(logger.Error, fmt.Sprintf("Error to update user info for user %d: %s", *input.Id, err.Error()))
+		return failure.ErrToUpdateUser
+	}
+
+	return nil
+}
+
+func (u *uc) GetUserInfoById(id int64) (*auth_model.UserInfo, error) {
+	result, err := u.repo.GetUserInfoById(id)
+	if err != nil {
+		u.logger.Log(logger.Error, fmt.Sprintf("Error to get user %d info: %s", id, err.Error()))
+		return nil, failure.ErrToGetUser
+	}
+	if result == nil {
+		u.logger.Log(logger.Error, fmt.Sprintf("Error to get user %d info: not found", id))
+		return nil, failure.ErrToGetUser
+	}
+	return result, nil
+}

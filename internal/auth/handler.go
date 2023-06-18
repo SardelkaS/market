@@ -10,6 +10,9 @@ type HttpHandler interface {
 	GenerateRefresh() fiber.Handler
 	ChangePassword() fiber.Handler
 	ChangeTimezone() fiber.Handler
+	UpdateUserInfo() fiber.Handler
+
+	GetUserInfo() fiber.Handler
 
 	ValidateAdminRole() fiber.Handler
 	ValidateAccessToken() fiber.Handler

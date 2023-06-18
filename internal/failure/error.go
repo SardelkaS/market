@@ -13,4 +13,5 @@ var (
 	ErrJWTNotValid        = errors.New("not walid token")
 	ErrChangeTimezone     = errors.New("error to change timezone")
 	ErrToGetUser          = errors.New("user not found")
+	ErrToUpdateUser       = errors.New("error to update user")
 )

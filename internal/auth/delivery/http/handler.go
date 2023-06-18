@@ -9,6 +9,7 @@ import (
 	"market_auth/internal/failure"
 	"market_auth/pkg/logger"
 	"market_auth/pkg/utils"
+	"strconv"
 )
 
 const _adminRole = "admin"
@@ -141,6 +142,50 @@ func (h httpHandler) ChangeTimezone() fiber.Handler {
 
 		return ctx.Status(fiber.StatusOK).JSON(common.Response{
 			Status: common.SuccessStatus,
+		})
+	}
+}
+
+func (h httpHandler) UpdateUserInfo() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		var body auth_model.UpdateUserInfoBody
+		if err := utils.ReadRequest(ctx, &body); err != nil {
+			h.logger.Log(logger.Error, fmt.Sprintf("change timezone request error: %v", err))
+			return failure.ErrInput
+		}
+
+		userId, err := strconv.ParseInt(ctx.Get("user_id"), 10, 64)
+		if err != nil {
+			return failure.ErrToGetUser
+		}
+		body.Id = &userId
+
+		err = h.uc.UpdateUserInfo(body)
+		if err != nil {
+			return err
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(common.Response{
+			Status: common.SuccessStatus,
+		})
+	}
+}
+
+func (h httpHandler) GetUserInfo() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		userId, err := strconv.ParseInt(ctx.Get("user_id"), 10, 64)
+		if err != nil {
+			return failure.ErrToGetUser
+		}
+
+		result, err := h.uc.GetUserInfoById(userId)
+		if err != nil {
+			return err
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(common.Response{
+			Status: common.SuccessStatus,
+			Result: result,
 		})
 	}
 }

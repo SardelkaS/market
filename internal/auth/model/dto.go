@@ -52,3 +52,12 @@ type SignUpBody struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
+
+type UpdateUserInfoBody struct {
+	Id          *int64  `json:"-"`
+	Name        *string `json:"name"`
+	Email       *string `json:"email"`
+	PhoneNumber *string `json:"phone_number"`
+	BirthDate   *string `json:"birth_date"`
+	ContactData *string `json:"contact_data"`
+}

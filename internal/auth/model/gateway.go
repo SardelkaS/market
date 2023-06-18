@@ -45,3 +45,12 @@ type TokensDataGatewayOutput struct {
 	RefreshToken string
 	UserId       string
 }
+
+type UpdateUserInfoGatewayInput struct {
+	Id          *int64
+	Name        *string
+	Email       *string
+	PhoneNumber *string
+	BirthDate   *string
+	ContactData *string
+}

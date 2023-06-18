@@ -12,8 +12,10 @@ type UC interface {
 	GetUserByFingerKey(fingerKey string) (*auth_model.User, error)
 
 	GetUser(input auth_model.GetUserLogicInput) (*auth_model.GetUserLogicOutput, error)
+	GetUserInfoById(id int64) (*auth_model.UserInfo, error)
 
 	ValidateJWT(params auth_model.ValidateJWTLogicInput) (*auth_model.ValidateJWTLogicOutput, error)
 	ChangePassword(input auth_model.ChangePasswordLogicInput) error
 	ChangeTimezone(input auth_model.ChangeTimezoneLogicInput) error
+	UpdateUserInfo(input auth_model.UpdateUserInfoBody) error
 }

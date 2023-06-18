@@ -14,4 +14,6 @@ func MapRoutes(r fiber.Router, h auth.HttpHandler) {
 
 	r.Patch("/password", h.ValidateAccessToken(), h.ChangePassword())
 	r.Patch("/timezone", h.ValidateAccessToken(), h.ChangeTimezone())
+	r.Post("/user/info", h.ValidateAccessToken(), h.UpdateUserInfo())
+	r.Get("/user/info", h.ValidateAccessToken(), h.GetUserInfo())
 }
