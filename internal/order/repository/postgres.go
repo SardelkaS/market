@@ -150,7 +150,11 @@ func (p *postgres) GetOrdersInfo(ids []int64) ([]order_model.OrderInfo, error) {
 			    o.contact_data,
 			    o.create_time,
 			    o.update_time,
-			    o.complete_time
+			    o.complete_time,
+			    (select count(*) from order_products where order_id = o.id) as products_count,
+			    (select sum(p.price) from product p 
+			              left join order_products op on p.id = op.product_id
+			              		where op.order_id = o.id) as cost
 			    	from "order" o
 					left join order_status os on o.status_id = os.id
 						where o.id = any($1)`, ids)
