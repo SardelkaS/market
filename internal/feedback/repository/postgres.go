@@ -2,6 +2,7 @@ package feedback_repository
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 	"market_auth/internal/feedback"
 	feedback_model "market_auth/internal/feedback/model"
 )
@@ -18,8 +19,8 @@ func NewPostgresRepo(db *sqlx.DB) feedback.Repository {
 
 func (p postgres) InsertFeedback(input feedback_model.Feedback) (*int64, error) {
 	var id int64
-	err := p.db.QueryRowx(`insert into feedback(user_id, product_id, stars, "message", pictures) values($1, $2, $3, $4, $5) returning id`,
-		input.UserId, input.ProductId, input.Stars, input.Message, input.Pictures).Scan(&id)
+	err := p.db.QueryRowx(`insert into feedback(internal_id, user_id, product_id, stars, "message", pictures) values($1, $2, $3, $4, $5, $6) returning id`,
+		input.InternalId, input.UserId, input.ProductId, input.Stars, input.Message, input.Pictures).Scan(&id)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +113,7 @@ select
 			where f.id = any($1)
 				and is_removed = false
 		order by (select count(*) from feedback_like fl where fl.feedback_id = f.id), f.create_date`,
-		ids, userId)
+		pq.Array(ids), userId)
 	if err != nil {
 		return nil, err
 	}
