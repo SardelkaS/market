@@ -200,7 +200,7 @@ func (p *postgres) GetProductsInfo(ids []int64, userId *int64) ([]product_model.
 				    p.pictures,
 				    p.buy_count,
 				    p.show,
-				    (select coalesce(avg(f.stars), 0) from feedback f where f.product_id = p.id) as stars,
+				    (select coalesce(avg(f.stars), 0) from feedback f where f.product_id = p.id)::int8 as stars,
 				    (select count(*) from like_product where user_id = $2) > 0 as liked,
 				    (select count(*) from feedback f where f.product_id = p.id) as feedbacks_count,
 				    (select count(*) from basket b where b.user_id = $2 and b.product_id = p.id) > 0 as in_basket
