@@ -25,6 +25,16 @@ func (u *uc) InsertProduct(input product_model.InsertProductBody) error {
 		fmt.Printf("Error to get manufacturer (%s): %s\n", *input.Manufacturer, err.Error())
 		return fmt.Errorf("error to get manufacturer")
 	}
+	sexId, err := u.repo.GetSexIdByName(*input.Sex)
+	if err != nil {
+		fmt.Printf("Error to get sex (%s): %s\n", *input.Sex, err.Error())
+		return fmt.Errorf("error to get sex")
+	}
+	countryId, err := u.repo.GetCountryIdByName(*input.Sex)
+	if err != nil {
+		fmt.Printf("Error to get country (%s): %s\n", *input.Sex, err.Error())
+		return fmt.Errorf("error to get country")
+	}
 
 	buyCount := int64(0)
 	productId, err := u.repo.InsertProduct(product_model.Product{
@@ -37,6 +47,8 @@ func (u *uc) InsertProduct(input product_model.InsertProductBody) error {
 		Pictures:       input.Pictures,
 		BuyCount:       &buyCount,
 		Show:           input.Show,
+		SexId:          sexId,
+		CountryId:      countryId,
 	})
 	if err != nil {
 		fmt.Printf("Error to insert product: %s\n", err.Error())
@@ -90,6 +102,24 @@ func (u *uc) FetchManufacturers() ([]string, error) {
 	if err != nil {
 		fmt.Printf("Error to fecth manufacturers: %s\n", err.Error())
 		return nil, fmt.Errorf("error to fecth manufacturers")
+	}
+	return manufacturers, nil
+}
+
+func (u *uc) FetchSexes() ([]string, error) {
+	manufacturers, err := u.repo.FetchSexes()
+	if err != nil {
+		fmt.Printf("Error to fecth sexes: %s\n", err.Error())
+		return nil, fmt.Errorf("error to fecth sexes")
+	}
+	return manufacturers, nil
+}
+
+func (u *uc) FetchCountries() ([]string, error) {
+	manufacturers, err := u.repo.FetchCountries()
+	if err != nil {
+		fmt.Printf("Error to fecth countries: %s\n", err.Error())
+		return nil, fmt.Errorf("error to fecth countries")
 	}
 	return manufacturers, nil
 }

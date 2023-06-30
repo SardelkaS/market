@@ -13,6 +13,8 @@ func MapRoutes(r fiber.Router, mw auth.HttpHandler, h product.HttpHandler) {
 
 	r.Get("/category", mw.SetUser(), h.FetchCategories())
 	r.Get("/manufacturer", mw.SetUser(), h.FetchManufacturers())
+	r.Get("/sex", mw.SetUser(), h.FetchSexes())
+	r.Get("/country", mw.SetUser(), h.FetchCountries())
 	r.Get("/", mw.SetUser(), h.FetchProducts())
 	r.Get("/:internal_id", mw.SetUser(), h.GetProduct())
 

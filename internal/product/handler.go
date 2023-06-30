@@ -8,6 +8,8 @@ type HttpHandler interface {
 	InsertCategory() fiber.Handler
 	FetchCategories() fiber.Handler
 	FetchManufacturers() fiber.Handler
+	FetchSexes() fiber.Handler
+	FetchCountries() fiber.Handler
 	FetchProducts() fiber.Handler
 	GetProduct() fiber.Handler
 	LikeProduct() fiber.Handler

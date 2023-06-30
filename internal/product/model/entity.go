@@ -14,6 +14,8 @@ type Product struct {
 	Pictures       pq.StringArray `json:"pictures" db:"pictures"`
 	BuyCount       *int64         `json:"buy_count" db:"buy_count"`
 	Show           *bool          `json:"show" db:"show"`
+	SexId          *int64         `json:"sex_id" db:"sex_id"`
+	CountryId      *int64         `json:"country_id" db:"country_id"`
 }
 
 type ProductCategory struct {
@@ -37,4 +39,6 @@ type ProductInfo struct {
 	Liked          *bool          `json:"liked" db:"liked"`
 	InBasket       *bool          `json:"in_basket" db:"in_basket"`
 	FeedbacksCount *int64         `json:"feedbacks_count" db:"feedbacks_count"`
+	Sex            *string        `json:"sex" db:"sex"`
+	Country        *string        `json:"country" db:"country"`
 }

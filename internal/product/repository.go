@@ -11,8 +11,12 @@ type Repository interface {
 	GetProductByInternalId(internalId string) (*product_model.Product, error)
 	GetManufacturerIdByName(name string) (*int64, error)
 	GetCategoryIdByName(name string) (*int64, error)
+	GetSexIdByName(name string) (*int64, error)
+	GetCountryIdByName(name string) (*int64, error)
 	FetchCategories() ([]string, error)
 	FetchManufacturers() ([]string, error)
+	FetchSexes() ([]string, error)
+	FetchCountries() ([]string, error)
 	FetchProducts(input product_model.FetchProductsGatewayInput) ([]product_model.Product, error)
 	GetProductsCount(input product_model.FetchProductsGatewayInput) (*int64, error)
 

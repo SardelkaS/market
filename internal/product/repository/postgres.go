@@ -19,9 +19,10 @@ func NewPostgresRepo(db *sqlx.DB) product.Repository {
 
 func (p *postgres) InsertProduct(input product_model.Product) (*int64, error) {
 	var id int64
-	err := p.db.QueryRowx(`INSERT INTO product("name", internal_id, price, count, description, pictures, manufacturer_id) 
-		values($1, $2, $3, $4, $5, $6, $7) returning id`,
-		input.Name, input.InternalId, input.Price, input.Count, input.Description, input.Pictures, input.ManufacturerId).Scan(&id)
+	err := p.db.QueryRowx(`INSERT INTO product("name", internal_id, price, count, description, pictures, manufacturer_id, sex_id, country_id) 
+		values($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id`,
+		input.Name, input.InternalId, input.Price, input.Count, input.Description, input.Pictures, input.ManufacturerId,
+		input.SexId, input.CountryId).Scan(&id)
 	if err != nil {
 		return nil, err
 	}
@@ -82,6 +83,24 @@ func (p *postgres) GetCategoryIdByName(name string) (*int64, error) {
 	return &result, nil
 }
 
+func (p *postgres) GetSexIdByName(name string) (*int64, error) {
+	var result int64
+	err := p.db.Get(&result, `SELECT id from sex where "name" = $1`, name)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+func (p *postgres) GetCountryIdByName(name string) (*int64, error) {
+	var result int64
+	err := p.db.Get(&result, `SELECT id from country where "name" = $1`, name)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 func (p *postgres) FetchCategories() ([]string, error) {
 	var result []string
 	err := p.db.Select(&result, `SELECT "name" FROM category`)
@@ -106,17 +125,45 @@ func (p *postgres) FetchManufacturers() ([]string, error) {
 	return result, nil
 }
 
+func (p *postgres) FetchSexes() ([]string, error) {
+	var result []string
+	err := p.db.Select(&result, `SELECT "name" FROM sex`)
+	if err != nil {
+		return nil, err
+	}
+	if len(result) == 0 {
+		return []string{}, nil
+	}
+	return result, nil
+}
+
+func (p *postgres) FetchCountries() ([]string, error) {
+	var result []string
+	err := p.db.Select(&result, `SELECT "name" FROM country`)
+	if err != nil {
+		return nil, err
+	}
+	if len(result) == 0 {
+		return []string{}, nil
+	}
+	return result, nil
+}
+
 func (p *postgres) FetchProducts(input product_model.FetchProductsGatewayInput) ([]product_model.Product, error) {
 	var result []product_model.Product
 	query := `SELECT p.* FROM product p
          				left join manufacturer m on p.manufacturer_id = m.id
+           				left join sex s on p.sex_id = s.id
+						left join country c on p.country_id = c.id
 						where ($1 = any(select pc.category_id from product_category pc where pc.product_id = p.id) or $1 is null)
 							and (m.name = any($2) or $2 is null)
 							and (p.price >= $3 or $3 is null)
 							and (p.price <= $4 or $4 is null)
 							and (p.show = $5 or $5 is null)
 							and (p.id = any(select lp.product_id from like_product lp where lp.user_id = $6) 
-							         or cast($7 as bool) is null or cast($7 as bool) = false)`
+							         or cast($7 as bool) is null or cast($7 as bool) = false)
+							and (s.name = any($8) or $8 is null)
+							and (c.name = any($9) or $9 is null)`
 	if input.Sort != nil {
 		if *input.Sort == "price_asc" {
 			query += ` order by p.price asc`
@@ -130,9 +177,9 @@ func (p *postgres) FetchProducts(input product_model.FetchProductsGatewayInput) 
 			query += ` order by p.buy_count desc`
 		}
 	}
-	query += ` LIMIT $8 OFFSET $9`
+	query += ` LIMIT $10 OFFSET $11`
 	err := p.db.Select(&result, query, input.Category, pq.Array(input.Manufacturers), input.MinPrice, input.MaxPrice,
-		input.Show, input.UserId, input.Likes, input.Limit, input.Offset)
+		input.Show, input.UserId, input.Likes, pq.Array(input.Sexes), pq.Array(input.Countries), input.Limit, input.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -203,9 +250,13 @@ func (p *postgres) GetProductsInfo(ids []int64, userId *int64) ([]product_model.
 				    (select coalesce(avg(f.stars), 0) from feedback f where f.product_id = p.id)::int8 as stars,
 				    (select count(*) from like_product where user_id = $2) > 0 as liked,
 				    (select count(*) from feedback f where f.product_id = p.id) as feedbacks_count,
-				    (select count(*) from basket b where b.user_id = $2 and b.product_id = p.id) > 0 as in_basket
+				    (select count(*) from basket b where b.user_id = $2 and b.product_id = p.id) > 0 as in_basket,
+				    s.name as sex,
+				    c.name as country
 					from product p
 						left join manufacturer m on p.manufacturer_id = m.id
+						left join sex s on p.sex_id = s.id
+						left join country c on p.country_id = c.id
 							where p.id = any($1)
 						order by array_position($1, p.id)`, pq.Array(ids), userId)
 	if err != nil {

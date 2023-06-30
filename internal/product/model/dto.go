@@ -7,6 +7,8 @@ type InsertProductBody struct {
 	Price        *float64       `json:"price"`
 	Count        *int64         `json:"count"`
 	Manufacturer *string        `json:"manufacturer"`
+	Sex          *string        `json:"sex"`
+	Country      *string        `json:"country"`
 	Description  *string        `json:"description"`
 	Categories   pq.StringArray `json:"categories"`
 	Pictures     pq.StringArray `json:"pictures"`
@@ -30,6 +32,8 @@ type FetchProductsInput struct {
 	Show          *bool    `query:"show"`
 	Like          *bool    `query:"like"`
 	Sort          *string  `query:"sort"`
+	Sexes         []string `query:"sexes"`
+	Countries     []string `query:"countries"`
 	Limit         *int64   `query:"limit"`
 	Offset        *int64   `query:"offset"`
 }

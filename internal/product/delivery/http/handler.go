@@ -108,6 +108,34 @@ func (h httpHandler) FetchManufacturers() fiber.Handler {
 	}
 }
 
+func (h httpHandler) FetchSexes() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		result, err := h.uc.FetchSexes()
+		if err != nil {
+			return err
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(common.Response{
+			Status: common.SuccessStatus,
+			Result: result,
+		})
+	}
+}
+
+func (h httpHandler) FetchCountries() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		result, err := h.uc.FetchCountries()
+		if err != nil {
+			return err
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(common.Response{
+			Status: common.SuccessStatus,
+			Result: result,
+		})
+	}
+}
+
 func (h httpHandler) FetchProducts() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		var params product_model.FetchProductsInput

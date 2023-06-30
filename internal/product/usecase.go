@@ -9,6 +9,8 @@ type UC interface {
 
 	FetchCategories() ([]string, error)
 	FetchManufacturers() ([]string, error)
+	FetchSexes() ([]string, error)
+	FetchCountries() ([]string, error)
 	FetchProducts(input product_model.FetchProductsInput) ([]product_model.Product, *int64, error)
 	GetProduct(internalId string) (*product_model.Product, error)
 

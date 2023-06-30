@@ -9,6 +9,8 @@ type FetchProductsGatewayInput struct {
 	Sort          *string
 	UserId        *int64
 	Likes         *bool
+	Sexes         []string
+	Countries     []string
 	Limit         *int64
 	Offset        *int64
 }
