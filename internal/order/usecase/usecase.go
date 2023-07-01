@@ -174,42 +174,6 @@ func (u *uc) PendingOrder(orderId string, userId int64) error {
 	return nil
 }
 
-func (u *uc) SendOrder(orderId string) error {
-	err := u.repo.UpdateOrderStatus(orderId, order_model.SendedStatus)
-	if err != nil {
-		fmt.Printf("Error to update order %s status to sended: %s", orderId, err.Error())
-		return fmt.Errorf("error to update order status")
-	}
-	return nil
-}
-
-func (u *uc) DeliveryOrder(orderId string) error {
-	err := u.repo.UpdateOrderStatus(orderId, order_model.DeliveredStatus)
-	if err != nil {
-		fmt.Printf("Error to update order %s status to delivered: %s", orderId, err.Error())
-		return fmt.Errorf("error to update order status")
-	}
-	return nil
-}
-
-func (u *uc) CompleteOrder(orderId string) error {
-	err := u.repo.CompleteOrder(orderId)
-	if err != nil {
-		fmt.Printf("Error to complete order %s status: %s", orderId, err.Error())
-		return fmt.Errorf("error to update order status")
-	}
-	return nil
-}
-
-func (u *uc) CancelOrder(orderId string) error {
-	err := u.repo.CancelOrder(orderId)
-	if err != nil {
-		fmt.Printf("Error to cancel order %s status: %s", orderId, err.Error())
-		return fmt.Errorf("error to update order status")
-	}
-	return nil
-}
-
 func (u *uc) FetchOrders(input order_model.FetchOrdersParams) (*order_model.FetchOrdersResult, error) {
 	params := order_model.FetchOrdersGatewayInput{
 		UserId: input.UserId,

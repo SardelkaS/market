@@ -77,26 +77,6 @@ func (u *uc) RemoveFeedback(input feedback_model.RemoveFeedbackBody) error {
 	return nil
 }
 
-func (u *uc) GodRemoveFeedback(feedbackId string) error {
-	feedbackData, err := u.repo.GetFeedbackByInternalId(&feedbackId)
-	if err != nil {
-		fmt.Printf("Error to get feedback %s: %s\n", feedbackId, err.Error())
-		return fmt.Errorf("error to get feedback")
-	}
-	if feedbackData == nil {
-		fmt.Printf("Error to get feedback %s: not found\n", feedbackId)
-		return fmt.Errorf("error to get feedback")
-	}
-
-	err = u.repo.RemoveFeedback(*feedbackData.Id)
-	if err != nil {
-		fmt.Printf("Error to remove feedback %s: %s", feedbackId, err.Error())
-		return fmt.Errorf("error to remove feedback")
-	}
-
-	return nil
-}
-
 func (u *uc) GetFeedbackByInternalId(internalId string) (*feedback_model.Feedback, error) {
 	feedbackData, err := u.repo.GetFeedbackByInternalId(&internalId)
 	if err != nil {

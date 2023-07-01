@@ -73,24 +73,6 @@ func (h httpHandler) RemoveFeedback() fiber.Handler {
 	}
 }
 
-func (h httpHandler) GodRemoveFeedback() fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		feedbackId := ctx.Params("internal_id", "")
-		if feedbackId == "" {
-			return failure.ErrInput
-		}
-
-		err := h.uc.GodRemoveFeedback(feedbackId)
-		if err != nil {
-			return err
-		}
-
-		return ctx.Status(fiber.StatusOK).JSON(common.Response{
-			Status: common.SuccessStatus,
-		})
-	}
-}
-
 func (h httpHandler) GetFeedback() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)

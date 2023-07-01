@@ -17,46 +17,6 @@ func NewPostgresRepo(db *sqlx.DB) product.Repository {
 	}
 }
 
-func (p *postgres) InsertProduct(input product_model.Product) (*int64, error) {
-	var id int64
-	err := p.db.QueryRowx(`INSERT INTO product("name", internal_id, price, count, description, pictures, 
-                    manufacturer_id, sex_id, country_id, subcategory_id) 
-		values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) returning id`,
-		input.Name, input.InternalId, input.Price, input.Count, input.Description, input.Pictures, input.ManufacturerId,
-		input.SexId, input.CountryId, input.SubcategoryId).Scan(&id)
-	if err != nil {
-		return nil, err
-	}
-	return &id, nil
-}
-
-func (p *postgres) InsertCategory(name string) (*int64, error) {
-	var id int64
-	err := p.db.QueryRowx(`INSERT INTO "category"(name) values($1) returning id`, name).Scan(&id)
-	if err != nil {
-		return nil, err
-	}
-	return &id, nil
-}
-
-func (p *postgres) InsertManufacturer(name string) (*int64, error) {
-	var id int64
-	err := p.db.QueryRowx(`INSERT INTO "manufacturer"(name) values($1) returning id`, name).Scan(&id)
-	if err != nil {
-		return nil, err
-	}
-	return &id, nil
-}
-
-func (p *postgres) InsertProductCategory(productId int64, categoryId int64) (*int64, error) {
-	var id int64
-	err := p.db.QueryRowx(`INSERT INTO product_category(product_id, category_id) values($1, $2) returning id`, productId, categoryId).Scan(&id)
-	if err != nil {
-		return nil, err
-	}
-	return &id, nil
-}
-
 func (p *postgres) GetProductByInternalId(internalId string) (*product_model.Product, error) {
 	var result product_model.Product
 	err := p.db.Get(&result, `SELECT * FROM product WHERE internal_id = $1`, internalId)
@@ -232,16 +192,6 @@ func (p *postgres) GetProductsCount(input product_model.FetchProductsGatewayInpu
 		return nil, err
 	}
 	return &result, nil
-}
-
-func (p *postgres) ShowProduct(internalId string) error {
-	_, err := p.db.Exec(`update product set "show" = true where internal_id = $1`, internalId)
-	return err
-}
-
-func (p *postgres) HideProduct(internalId string) error {
-	_, err := p.db.Exec(`update product set "show" = false where internal_id = $1`, internalId)
-	return err
 }
 
 func (p *postgres) UpdateProductCount(internalId string, count int64) error {

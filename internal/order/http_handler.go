@@ -8,10 +8,6 @@ type HttpHandler interface {
 	RemoveProductFromOrder() fiber.Handler
 	UpdateProductCount() fiber.Handler
 	PendingOrder() fiber.Handler
-	SendOrder() fiber.Handler
-	DeliveryOrder() fiber.Handler
-	CompleteOrder() fiber.Handler
-	CancelOrder() fiber.Handler
 	FetchOrders() fiber.Handler
 	GetOrder() fiber.Handler
 	FetchOrderProducts() fiber.Handler

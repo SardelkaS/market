@@ -23,63 +23,6 @@ func NewHttpHandler(uc product.UC, reqUtil *utils.Reader) product.HttpHandler {
 	}
 }
 
-func (h httpHandler) InsertProduct() fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		var body product_model.InsertProductBody
-		err := h.reqUtil.Read(ctx.Context(), ctx.BodyParser, &body)
-		if err != nil {
-			return failure.ErrInput
-		}
-
-		err = h.uc.InsertProduct(body)
-		if err != nil {
-			return err
-		}
-
-		return ctx.Status(fiber.StatusOK).JSON(common.Response{
-			Status: common.SuccessStatus,
-		})
-	}
-}
-
-func (h httpHandler) InsertManufacturer() fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		var body product_model.InsertManufacturerBody
-		err := h.reqUtil.Read(ctx.Context(), ctx.BodyParser, &body)
-		if err != nil {
-			return failure.ErrInput
-		}
-
-		err = h.uc.InsertManufacturer(body)
-		if err != nil {
-			return err
-		}
-
-		return ctx.Status(fiber.StatusOK).JSON(common.Response{
-			Status: common.SuccessStatus,
-		})
-	}
-}
-
-func (h httpHandler) InsertCategory() fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		var body product_model.InsertCategoryBody
-		err := h.reqUtil.Read(ctx.Context(), ctx.BodyParser, &body)
-		if err != nil {
-			return failure.ErrInput
-		}
-
-		err = h.uc.InsertCategory(body)
-		if err != nil {
-			return err
-		}
-
-		return ctx.Status(fiber.StatusOK).JSON(common.Response{
-			Status: common.SuccessStatus,
-		})
-	}
-}
-
 func (h httpHandler) FetchCategories() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		result, err := h.uc.FetchCategories()
@@ -240,66 +183,6 @@ func (h httpHandler) UnlikeProduct() fiber.Handler {
 		}
 
 		err = h.uc.UnlikeProduct(productId, userId)
-		if err != nil {
-			return err
-		}
-
-		return ctx.Status(fiber.StatusOK).JSON(common.Response{
-			Status: common.SuccessStatus,
-		})
-	}
-}
-
-func (h httpHandler) ShowProduct() fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		productId := ctx.Params("internal_id", "")
-		if productId == "" {
-			return failure.ErrInput
-		}
-
-		err := h.uc.ShowProduct(productId)
-		if err != nil {
-			return err
-		}
-
-		return ctx.Status(fiber.StatusOK).JSON(common.Response{
-			Status: common.SuccessStatus,
-		})
-	}
-}
-
-func (h httpHandler) HideProduct() fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		productId := ctx.Params("internal_id", "")
-		if productId == "" {
-			return failure.ErrInput
-		}
-
-		err := h.uc.HideProduct(productId)
-		if err != nil {
-			return err
-		}
-
-		return ctx.Status(fiber.StatusOK).JSON(common.Response{
-			Status: common.SuccessStatus,
-		})
-	}
-}
-
-func (h httpHandler) UpdateProductCount() fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		var body product_model.UpdateProductCountBody
-		err := h.reqUtil.Read(ctx.Context(), ctx.BodyParser, &body)
-		if err != nil {
-			return failure.ErrInput
-		}
-
-		productId := ctx.Params("internal_id", "")
-		if productId == "" {
-			return failure.ErrInput
-		}
-
-		err = h.uc.UpdateProductCount(productId, body.Count)
 		if err != nil {
 			return err
 		}

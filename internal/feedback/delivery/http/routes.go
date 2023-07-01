@@ -9,7 +9,6 @@ import (
 func MapRoutes(r fiber.Router, mw auth.HttpHandler, h feedback.HttpHandler) {
 	r.Post("/", mw.ValidateAccessToken(), h.CreateFeedback())
 	r.Delete("/:internal_id", mw.ValidateAccessToken(), h.RemoveFeedback())
-	r.Delete("/:internal_id/god", mw.ValidateAccessToken(), mw.ValidateAdminRole(), h.GodRemoveFeedback())
 	r.Get("/:internal_id", mw.ValidateAccessToken(), h.GetFeedback())
 	r.Get("/", mw.ValidateAccessToken(), h.FetchFeedback())
 	r.Put("/:internal_id/like", mw.ValidateAccessToken(), h.LikeFeedback())

@@ -2,10 +2,8 @@ package product_usecase
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"market_auth/internal/product"
 	product_model "market_auth/internal/product/model"
-	"market_auth/pkg/secure"
 )
 
 type uc struct {
@@ -16,70 +14,6 @@ func New(repo product.Repository) product.UC {
 	return &uc{
 		repo: repo,
 	}
-}
-
-func (u *uc) InsertProduct(input product_model.InsertProductBody) error {
-	internalId := secure.CalcInternalId(uuid.New().String())
-	manufacturerId, err := u.repo.GetManufacturerIdByName(*input.Manufacturer)
-	if err != nil {
-		fmt.Printf("Error to get manufacturer (%s): %s\n", *input.Manufacturer, err.Error())
-		return fmt.Errorf("error to get manufacturer")
-	}
-	sexId, err := u.repo.GetSexIdByName(*input.Sex)
-	if err != nil {
-		fmt.Printf("Error to get sex (%s): %s\n", *input.Sex, err.Error())
-		return fmt.Errorf("error to get sex")
-	}
-	countryId, err := u.repo.GetCountryIdByName(*input.Sex)
-	if err != nil {
-		fmt.Printf("Error to get country (%s): %s\n", *input.Sex, err.Error())
-		return fmt.Errorf("error to get country")
-	}
-	subcategoryId, err := u.repo.GetSubcategoryIdByName(*input.Subcategory)
-	if err != nil {
-		fmt.Printf("Error to get subcategory (%s): %s\n", *input.Sex, err.Error())
-		return fmt.Errorf("error to get subcategory")
-	}
-
-	buyCount := int64(0)
-	_, err = u.repo.InsertProduct(product_model.Product{
-		InternalId:     &internalId,
-		Name:           input.Name,
-		Price:          input.Price,
-		Count:          input.Count,
-		ManufacturerId: manufacturerId,
-		Description:    input.Description,
-		Pictures:       input.Pictures,
-		BuyCount:       &buyCount,
-		Show:           input.Show,
-		SexId:          sexId,
-		CountryId:      countryId,
-		SubcategoryId:  subcategoryId,
-	})
-	if err != nil {
-		fmt.Printf("Error to insert product: %s\n", err.Error())
-		return fmt.Errorf("error to insert product")
-	}
-
-	return nil
-}
-
-func (u *uc) InsertManufacturer(input product_model.InsertManufacturerBody) error {
-	_, err := u.repo.InsertManufacturer(*input.Name)
-	if err != nil {
-		fmt.Printf("Error to save manufacturer: %s\n", err.Error())
-		return fmt.Errorf("error to save manufacturer")
-	}
-	return nil
-}
-
-func (u *uc) InsertCategory(input product_model.InsertCategoryBody) error {
-	_, err := u.repo.InsertCategory(*input.Name)
-	if err != nil {
-		fmt.Printf("Error to save category: %s\n", err.Error())
-		return fmt.Errorf("error to save category")
-	}
-	return nil
 }
 
 func (u *uc) FetchCategories() ([]product_model.CategoryInfo, error) {
@@ -200,24 +134,6 @@ func (u *uc) UnlikeProduct(internalId string, userId int64) error {
 		return fmt.Errorf("error to unlike product")
 	}
 
-	return nil
-}
-
-func (u *uc) ShowProduct(internalId string) error {
-	err := u.repo.ShowProduct(internalId)
-	if err != nil {
-		fmt.Printf("Error to show product %s: %s", internalId, err.Error())
-		return fmt.Errorf("error to show product")
-	}
-	return nil
-}
-
-func (u *uc) HideProduct(internalId string) error {
-	err := u.repo.HideProduct(internalId)
-	if err != nil {
-		fmt.Printf("Error to hide product %s: %s", internalId, err.Error())
-		return fmt.Errorf("error to hide product")
-	}
 	return nil
 }
 

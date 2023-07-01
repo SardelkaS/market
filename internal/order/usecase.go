@@ -10,11 +10,6 @@ type UC interface {
 	UpdateProductCount(input order_model.UpdateProductsCountBody) error
 
 	PendingOrder(orderId string, userId int64) error
-	SendOrder(orderId string) error
-	DeliveryOrder(orderId string) error
-	CompleteOrder(orderId string) error
-	CancelOrder(orderId string) error
-
 	FetchOrders(input order_model.FetchOrdersParams) (*order_model.FetchOrdersResult, error)
 	GetOrder(orderId string, userId int64) (*order_model.Order, error)
 	FetchOrderProducts(input order_model.FetchOrderProductsParams) (*order_model.FetchOrderProductsResult, error)
