@@ -111,7 +111,14 @@ func (u *uc) LikeProduct(internalId string, userId int64) error {
 		return err
 	}
 
-	//TODO: CHECK LIKE
+	liked, err := u.repo.CheckLiked(*productData.Id, userId)
+	if err != nil {
+		fmt.Printf("Error to check is product %d is liked by %d: %s", *productData.Id, userId, err.Error())
+		return fmt.Errorf("error to check is product liked")
+	}
+	if *liked {
+		return fmt.Errorf("product already liked")
+	}
 
 	err = u.repo.LikeProduct(*productData.Id, userId)
 	if err != nil {

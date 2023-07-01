@@ -19,6 +19,7 @@ type Repository interface {
 
 	UpdateProductCount(internalId string, count int64) error
 
+	CheckLiked(productId int64, userId int64) (*bool, error)
 	LikeProduct(productId int64, userId int64) error
 	UnlikeProduct(productId int64, userId int64) error
 

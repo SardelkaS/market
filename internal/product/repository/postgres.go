@@ -199,6 +199,15 @@ func (p *postgres) UpdateProductCount(internalId string, count int64) error {
 	return err
 }
 
+func (p *postgres) CheckLiked(productId int64, userId int64) (*bool, error) {
+	var result bool
+	err := p.db.Get(&result, `select count(*) > 0 from like_product where user_id = $1 and product_id = $2`, userId, productId)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 func (p *postgres) LikeProduct(productId int64, userId int64) error {
 	_, err := p.db.Exec(`insert into like_product(product_id, user_id) values($1, $2)`, productId, userId)
 	return err
