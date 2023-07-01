@@ -7,7 +7,7 @@ type UC interface {
 	InsertManufacturer(input product_model.InsertManufacturerBody) error
 	InsertCategory(input product_model.InsertCategoryBody) error
 
-	FetchCategories() ([]string, error)
+	FetchCategories() ([]product_model.CategoryInfo, error)
 	FetchManufacturers() ([]string, error)
 	FetchSexes() ([]string, error)
 	FetchCountries() ([]string, error)

@@ -1,7 +1,7 @@
 package product_model
 
 type FetchProductsGatewayInput struct {
-	Category      *int64
+	SubcategoryId *int64
 	Manufacturers []string
 	MinPrice      *float64
 	MaxPrice      *float64

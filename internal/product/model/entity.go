@@ -16,6 +16,7 @@ type Product struct {
 	Show           *bool          `json:"show" db:"show"`
 	SexId          *int64         `json:"sex_id" db:"sex_id"`
 	CountryId      *int64         `json:"country_id" db:"country_id"`
+	SubcategoryId  *int64         `json:"subcategory_id" db:"subcategory_id"`
 }
 
 type ProductCategory struct {
@@ -41,4 +42,11 @@ type ProductInfo struct {
 	FeedbacksCount *int64         `json:"feedbacks_count" db:"feedbacks_count"`
 	Sex            *string        `json:"sex" db:"sex"`
 	Country        *string        `json:"country" db:"country"`
+	Subcategory    *string        `json:"subcategory" db:"subcategory"`
+}
+
+type CategoryInfo struct {
+	Id            *int64   `json:"-" db:"id"`
+	Name          *string  `json:"name" db:"name"`
+	Subcategories []string `json:"subcategories" db:"-"`
 }

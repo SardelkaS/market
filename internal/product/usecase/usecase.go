@@ -35,9 +35,14 @@ func (u *uc) InsertProduct(input product_model.InsertProductBody) error {
 		fmt.Printf("Error to get country (%s): %s\n", *input.Sex, err.Error())
 		return fmt.Errorf("error to get country")
 	}
+	subcategoryId, err := u.repo.GetSubcategoryIdByName(*input.Subcategory)
+	if err != nil {
+		fmt.Printf("Error to get subcategory (%s): %s\n", *input.Sex, err.Error())
+		return fmt.Errorf("error to get subcategory")
+	}
 
 	buyCount := int64(0)
-	productId, err := u.repo.InsertProduct(product_model.Product{
+	_, err = u.repo.InsertProduct(product_model.Product{
 		InternalId:     &internalId,
 		Name:           input.Name,
 		Price:          input.Price,
@@ -49,22 +54,11 @@ func (u *uc) InsertProduct(input product_model.InsertProductBody) error {
 		Show:           input.Show,
 		SexId:          sexId,
 		CountryId:      countryId,
+		SubcategoryId:  subcategoryId,
 	})
 	if err != nil {
 		fmt.Printf("Error to insert product: %s\n", err.Error())
 		return fmt.Errorf("error to insert product")
-	}
-
-	for _, category := range input.Categories {
-		categoryId, err := u.repo.GetCategoryIdByName(category)
-		if err != nil {
-			fmt.Printf("Error to get category %s: %s\n", category, err.Error())
-			continue
-		}
-		_, err = u.repo.InsertProductCategory(*productId, *categoryId)
-		if err != nil {
-			fmt.Printf("Error to insert product category: %s\n", err.Error())
-		}
 	}
 
 	return nil
@@ -88,11 +82,20 @@ func (u *uc) InsertCategory(input product_model.InsertCategoryBody) error {
 	return nil
 }
 
-func (u *uc) FetchCategories() ([]string, error) {
+func (u *uc) FetchCategories() ([]product_model.CategoryInfo, error) {
 	categories, err := u.repo.FetchCategories()
 	if err != nil {
 		fmt.Printf("Error to fecth categories: %s\n", err.Error())
 		return nil, fmt.Errorf("error to fecth categories")
+	}
+
+	for i, category := range categories {
+		subcategories, err := u.repo.FetchSubcategories(*category.Id)
+		if err != nil {
+			fmt.Printf("Error to fecth subcategories: %s\n", err.Error())
+			return nil, fmt.Errorf("error to fecth subcategories")
+		}
+		categories[i].Subcategories = subcategories
 	}
 	return categories, nil
 }
@@ -125,17 +128,17 @@ func (u *uc) FetchCountries() ([]string, error) {
 }
 
 func (u *uc) FetchProducts(input product_model.FetchProductsInput) ([]product_model.Product, *int64, error) {
-	var categoryId *int64
+	var subcategoryId *int64
 	var err error
-	if input.Category != nil {
-		categoryId, err = u.repo.GetCategoryIdByName(*input.Category)
+	if input.Subcategory != nil {
+		subcategoryId, err = u.repo.GetSubcategoryIdByName(*input.Subcategory)
 		if err != nil {
-			fmt.Printf("Error to get category %s: %s\n", *input.Category, err.Error())
+			fmt.Printf("Error to get category %s: %s\n", *input.Subcategory, err.Error())
 			return nil, nil, fmt.Errorf("error to fetch products")
 		}
 	}
 	params := product_model.FetchProductsGatewayInput{
-		Category:      categoryId,
+		SubcategoryId: subcategoryId,
 		Manufacturers: input.Manufacturers,
 		MinPrice:      input.MinPrice,
 		MaxPrice:      input.MaxPrice,
