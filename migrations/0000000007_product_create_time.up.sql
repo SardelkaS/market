@@ -1,0 +1,1 @@
+alter table product add column if not exists create_date timestamp not null default now();

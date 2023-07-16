@@ -1,6 +1,9 @@
 package product_model
 
-import "github.com/lib/pq"
+import (
+	"github.com/lib/pq"
+	"time"
+)
 
 type Product struct {
 	Id             *int64         `json:"id" db:"id"`
@@ -17,6 +20,7 @@ type Product struct {
 	SexId          *int64         `json:"sex_id" db:"sex_id"`
 	CountryId      *int64         `json:"country_id" db:"country_id"`
 	SubcategoryId  *int64         `json:"subcategory_id" db:"subcategory_id"`
+	CreateDate     *time.Time     `json:"create_date" db:"create_date"`
 }
 
 type ProductCategory struct {

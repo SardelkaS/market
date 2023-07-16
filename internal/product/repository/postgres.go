@@ -157,6 +157,10 @@ func (p *postgres) FetchProducts(input product_model.FetchProductsGatewayInput) 
 			query += ` order by p.buy_count asc`
 		} else if *input.Sort == "popularity_desc" {
 			query += ` order by p.buy_count desc`
+		} else if *input.Sort == "discount" {
+			query += ` order by (1 - p.price/coalesce(p.old_price, p.price)) desc`
+		} else if *input.Sort == "newest" {
+			query += ` order by p.create_date desc`
 		}
 	}
 	query += ` LIMIT $10 OFFSET $11`
