@@ -11,6 +11,10 @@ import (
 	"strconv"
 )
 
+const (
+	_defaultLimit = int64(5)
+)
+
 type httpHandler struct {
 	uc      product.UC
 	reqUtil *utils.Reader
@@ -140,6 +144,8 @@ func (h httpHandler) GetProduct() fiber.Handler {
 			return fmt.Errorf("error to get product info")
 		}
 
+		_ = h.uc.ViewProduct(userId, productId)
+
 		return ctx.Status(fiber.StatusOK).JSON(common.Response{
 			Status: common.SuccessStatus,
 			Result: realResult,
@@ -189,6 +195,30 @@ func (h httpHandler) UnlikeProduct() fiber.Handler {
 
 		return ctx.Status(fiber.StatusOK).JSON(common.Response{
 			Status: common.SuccessStatus,
+		})
+	}
+}
+
+func (h httpHandler) FetchRecentlyViewedProducts() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
+		if err != nil {
+			return failure.ErrToGetUser
+		}
+
+		limit, err := strconv.ParseInt(ctx.Query("limit", ""), 10, 64)
+		if err != nil {
+			limit = _defaultLimit
+		}
+
+		result, err := h.uc.FetchRecentlyViewedProductsInfo(userId, limit)
+		if err != nil {
+			return err
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(common.Response{
+			Status: common.SuccessStatus,
+			Result: result,
 		})
 	}
 }

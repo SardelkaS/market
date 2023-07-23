@@ -156,6 +156,35 @@ func (u *uc) UpdateProductCount(internalId string, count int64) error {
 	return nil
 }
 
+func (u *uc) ViewProduct(userId int64, productInternalId string) error {
+	productData, err := u.GetProduct(productInternalId)
+	if err != nil {
+		return err
+	}
+
+	err = u.repo.ViewProduct(userId, *productData.Id)
+	if err != nil {
+		fmt.Printf("Error to view product %s by user %d: %s", productInternalId, userId, err.Error())
+		return fmt.Errorf("error to view product")
+	}
+	return nil
+}
+
+func (u *uc) FetchRecentlyViewedProductsInfo(userId int64, limit int64) ([]product_model.ProductInfo, error) {
+	ids, err := u.repo.FetchRecentlyViewedIds(userId, limit)
+	if err != nil {
+		fmt.Printf("Error to fetch recently viewed by user %d products: %s", userId, err.Error())
+		return nil, fmt.Errorf("error to fetch recently viewed products")
+	}
+
+	result, err := u.repo.GetProductsInfo(ids, &userId)
+	if err != nil {
+		fmt.Printf("Error to get products info: %s", err.Error())
+		return nil, fmt.Errorf("error to get products info")
+	}
+	return result, nil
+}
+
 func (u *uc) GetProductsInfo(input []product_model.Product, userId *int64) ([]product_model.ProductInfo, error) {
 	var ids []int64
 	for _, productData := range input {

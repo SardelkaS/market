@@ -237,7 +237,7 @@ func (p *postgres) GetProductsInfo(ids []int64, userId *int64) ([]product_model.
 				    p.buy_count,
 				    p.show,
 				    (select coalesce(avg(f.stars), 0) from feedback f where f.product_id = p.id)::int8 as stars,
-				    (select count(*) from like_product where user_id = $2) > 0 as liked,
+				    (select count(*) from like_product lp where lp.user_id = $2 and lp.product_id = p.id) > 0 as liked,
 				    (select count(*) from feedback f where f.product_id = p.id) as feedbacks_count,
 				    (select count(*) from basket b where b.user_id = $2 and b.product_id = p.id) > 0 as in_basket,
 				    s.name as sex,
@@ -255,6 +255,22 @@ func (p *postgres) GetProductsInfo(ids []int64, userId *int64) ([]product_model.
 	}
 	if len(result) == 0 {
 		return []product_model.ProductInfo{}, nil
+	}
+	return result, nil
+}
+
+func (p *postgres) ViewProduct(userId int64, productId int64) error {
+	_, err := p.db.Exec(`insert into recently_viewed(user_id, product_id, view_date) values($1, $2, now())`,
+		userId, productId)
+	return err
+}
+
+func (p *postgres) FetchRecentlyViewedIds(userId int64, limit int64) ([]int64, error) {
+	var result []int64
+	err := p.db.Select(&result, `select product_id from recently_viewed where user_id = $1 order by view_date desc limit $2`,
+		userId, limit)
+	if err != nil {
+		return nil, err
 	}
 	return result, nil
 }

@@ -23,5 +23,8 @@ type Repository interface {
 	LikeProduct(productId int64, userId int64) error
 	UnlikeProduct(productId int64, userId int64) error
 
+	ViewProduct(userId int64, productId int64) error
+	FetchRecentlyViewedIds(userId int64, limit int64) ([]int64, error)
+
 	GetProductsInfo(ids []int64, userId *int64) ([]product_model.ProductInfo, error)
 }

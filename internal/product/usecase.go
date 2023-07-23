@@ -15,5 +15,8 @@ type UC interface {
 
 	UpdateProductCount(internalId string, count int64) error
 
+	ViewProduct(userId int64, productInternalId string) error
+	FetchRecentlyViewedProductsInfo(userId int64, limit int64) ([]product_model.ProductInfo, error)
+
 	GetProductsInfo(input []product_model.Product, userId *int64) ([]product_model.ProductInfo, error)
 }

@@ -11,4 +11,5 @@ type HttpHandler interface {
 	GetProduct() fiber.Handler
 	LikeProduct() fiber.Handler
 	UnlikeProduct() fiber.Handler
+	FetchRecentlyViewedProducts() fiber.Handler
 }
