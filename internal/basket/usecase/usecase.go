@@ -88,7 +88,9 @@ func (u *uc) GetBasket(userId int64) ([]basket_model.Basket, error) {
 
 func (u *uc) GetBasketInfo(rawData []basket_model.Basket, userId *int64) (*basket_model.BasketInfo, error) {
 	if len(rawData) == 0 {
-		return nil, nil
+		return &basket_model.BasketInfo{
+			Products: []basket_model.BasketProductInfo{},
+		}, nil
 	}
 
 	var products []basket_model.BasketProductInfo
@@ -105,7 +107,6 @@ func (u *uc) GetBasketInfo(rawData []basket_model.Basket, userId *int64) (*baske
 	}
 
 	return &basket_model.BasketInfo{
-		UserId:   rawData[0].UserId,
 		Products: products,
 	}, nil
 }

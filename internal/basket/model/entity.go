@@ -15,6 +15,5 @@ type BasketProductInfo struct {
 }
 
 type BasketInfo struct {
-	UserId   *int64              `json:"user_id"`
 	Products []BasketProductInfo `json:"products"`
 }

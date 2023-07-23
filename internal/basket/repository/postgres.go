@@ -48,7 +48,7 @@ func (p *postgres) ClearBasket(userId int64) error {
 
 func (p *postgres) GetBasket(userId int64) ([]basket_model.Basket, error) {
 	var result []basket_model.Basket
-	err := p.db.Select(&result, `select * from basket where user_id = $1`, userId)
+	err := p.db.Select(&result, `select * from basket where user_id = $1 and count > 0`, userId)
 	if err != nil {
 		return nil, err
 	}
