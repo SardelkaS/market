@@ -14,5 +14,5 @@ type UC interface {
 	GetOrder(orderId string, userId int64) (*order_model.Order, error)
 	FetchOrderProducts(input order_model.FetchOrderProductsParams) (*order_model.FetchOrderProductsResult, error)
 
-	GetOrdersInfo(orders []order_model.Order) ([]order_model.OrderInfo, error)
+	GetOrdersInfo(orders []order_model.Order, productsLimit *int64) ([]order_model.OrderInfo, error)
 }

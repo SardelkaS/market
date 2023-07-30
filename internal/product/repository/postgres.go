@@ -198,6 +198,38 @@ func (p *postgres) GetProductsCount(input product_model.FetchProductsGatewayInpu
 	return &result, nil
 }
 
+func (p *postgres) FindProducts(nameTail *string, limit *int64, offset *int64) ([]product_model.Product, error) {
+	var result []product_model.Product
+	err := p.db.Select(&result, `
+select * from product p
+	where p.name like '%' || $1 || '%'
+	order by p.buy_count desc
+	limit $2 offset $3`,
+		nameTail, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	if len(result) == 0 {
+		return []product_model.Product{}, nil
+	}
+	return result, nil
+}
+
+func (p *postgres) FindProductsCount(nameTail *string) (*int64, error) {
+	var result []int64
+	err := p.db.Select(&result, `
+select count(*) from product p
+	where p.name like '%' || $1 || '%'`,
+		nameTail)
+	if err != nil {
+		return nil, err
+	}
+	if len(result) == 0 {
+		return nil, nil
+	}
+	return &result[0], nil
+}
+
 func (p *postgres) UpdateProductCount(internalId string, count int64) error {
 	_, err := p.db.Exec(`update product set "count" = $2 where internal_id = $1`, internalId, count)
 	return err

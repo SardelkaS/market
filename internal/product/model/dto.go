@@ -15,6 +15,12 @@ type FetchProductsInput struct {
 	Offset        *int64   `query:"offset"`
 }
 
+type FindProductsInput struct {
+	NameTail *string `query:"name_tail"`
+	Limit    *int64  `query:"limit"`
+	Offset   *int64  `query:"offset"`
+}
+
 type FetchProductsResponse struct {
 	Products []ProductInfo
 	Count    *int64

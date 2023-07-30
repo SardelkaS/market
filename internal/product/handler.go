@@ -8,6 +8,7 @@ type HttpHandler interface {
 	FetchSexes() fiber.Handler
 	FetchCountries() fiber.Handler
 	FetchProducts() fiber.Handler
+	FindProducts() fiber.Handler
 	GetProduct() fiber.Handler
 	LikeProduct() fiber.Handler
 	UnlikeProduct() fiber.Handler

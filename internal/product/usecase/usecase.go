@@ -100,6 +100,21 @@ func (u *uc) FetchProducts(input product_model.FetchProductsInput) ([]product_mo
 	return products, count, nil
 }
 
+func (u *uc) FindProducts(input product_model.FindProductsInput) ([]product_model.Product, *int64, error) {
+	products, err := u.repo.FindProducts(input.NameTail, input.Limit, input.Offset)
+	if err != nil {
+		fmt.Printf("Error to find products: %s\n", err.Error())
+		return nil, nil, fmt.Errorf("error to find products")
+	}
+	count, err := u.repo.FindProductsCount(input.NameTail)
+	if err != nil {
+		fmt.Printf("Error to find products count: %s\n", err.Error())
+		return nil, nil, fmt.Errorf("error to find products")
+	}
+
+	return products, count, nil
+}
+
 func (u *uc) GetProduct(internalId string) (*product_model.Product, error) {
 	productData, err := u.repo.GetProductByInternalId(internalId)
 	if err != nil {

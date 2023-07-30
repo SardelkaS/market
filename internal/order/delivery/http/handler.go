@@ -48,7 +48,7 @@ func (h httpHandler) CreateOrder() fiber.Handler {
 			return fmt.Errorf("error to create order")
 		}
 
-		realResult, err := h.uc.GetOrdersInfo([]order_model.Order{*rawResult})
+		realResult, err := h.uc.GetOrdersInfo([]order_model.Order{*rawResult}, nil)
 		if err != nil {
 			return err
 		}
@@ -196,9 +196,16 @@ func (h httpHandler) FetchOrders() fiber.Handler {
 		if err == nil {
 			params.Limit = &limit
 		}
+
 		offset, err := strconv.ParseInt(ctx.Query("offset", ""), 10, 64)
 		if err == nil {
 			params.Offset = &offset
+		}
+
+		var productsLimit *int64
+		pl, err := strconv.ParseInt(ctx.Query("products_limit", ""), 10, 64)
+		if err == nil {
+			productsLimit = &pl
 		}
 
 		rawResult, err := h.uc.FetchOrders(params)
@@ -206,7 +213,7 @@ func (h httpHandler) FetchOrders() fiber.Handler {
 			return err
 		}
 
-		realResult, err := h.uc.GetOrdersInfo(rawResult.Orders)
+		realResult, err := h.uc.GetOrdersInfo(rawResult.Orders, productsLimit)
 		if err != nil {
 			return err
 		}
@@ -241,7 +248,7 @@ func (h httpHandler) GetOrder() fiber.Handler {
 			return fmt.Errorf("error to get order")
 		}
 
-		realResult, err := h.uc.GetOrdersInfo([]order_model.Order{*rawResult})
+		realResult, err := h.uc.GetOrdersInfo([]order_model.Order{*rawResult}, nil)
 		if err != nil {
 			return err
 		}

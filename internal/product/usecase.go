@@ -8,6 +8,7 @@ type UC interface {
 	FetchSexes() ([]string, error)
 	FetchCountries() ([]string, error)
 	FetchProducts(input product_model.FetchProductsInput) ([]product_model.Product, *int64, error)
+	FindProducts(input product_model.FindProductsInput) ([]product_model.Product, *int64, error)
 	GetProduct(internalId string) (*product_model.Product, error)
 
 	LikeProduct(internalId string, userId int64) error

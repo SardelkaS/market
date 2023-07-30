@@ -15,6 +15,8 @@ type Repository interface {
 	FetchSexes() ([]string, error)
 	FetchCountries() ([]string, error)
 	FetchProducts(input product_model.FetchProductsGatewayInput) ([]product_model.Product, error)
+	FindProducts(nameTail *string, limit *int64, offset *int64) ([]product_model.Product, error)
+	FindProductsCount(nameTail *string) (*int64, error)
 	GetProductsCount(input product_model.FetchProductsGatewayInput) (*int64, error)
 
 	UpdateProductCount(internalId string, count int64) error

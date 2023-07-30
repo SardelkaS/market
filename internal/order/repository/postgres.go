@@ -143,6 +143,7 @@ func (p *postgres) GetOrdersInfo(ids []int64) ([]order_model.OrderInfo, error) {
 	var result []order_model.OrderInfo
 	err := p.db.Select(&result, `
 			select 
+			    o.id,
 			    o.internal_id,
 			    o.user_id,
 			    os.name as status,
@@ -151,7 +152,7 @@ func (p *postgres) GetOrdersInfo(ids []int64) ([]order_model.OrderInfo, error) {
 			    o.create_time,
 			    o.update_time,
 			    o.complete_time,
-			    (select count(*) from order_products where order_id = o.id) as products_count,
+			    (select count(*) from order_products op2 where op2.order_id = o.id and op2.count > 0) as products_count,
 			    (select sum(p.price) from product p 
 			              left join order_products op on p.id = op.product_id
 			              		where op.order_id = o.id) as cost

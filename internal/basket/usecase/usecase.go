@@ -26,6 +26,20 @@ func (u *uc) AddProduct(userId int64, productId string, count int64) error {
 		return fmt.Errorf("product not found")
 	}
 
+	exists, err := u.repo.CheckRecordExists(userId, *productData.Id)
+	if err != nil {
+		fmt.Printf("Error to check record %d for user %d: %s", *productData.Id, userId, err.Error())
+		return fmt.Errorf("error to add product to basket")
+	}
+	if exists != nil && *exists {
+		err = u.repo.IncrementCount(userId, *productData.Id)
+		if err != nil {
+			fmt.Printf("Error to increment product %s count: %s\n", productId, err.Error())
+			return fmt.Errorf("error to add product to basket")
+		}
+		return nil
+	}
+
 	_, err = u.repo.AddProduct(basket_model.AddProductGatewayInput{
 		UserId:    &userId,
 		ProductId: productData.Id,

@@ -116,6 +116,40 @@ func (h httpHandler) FetchProducts() fiber.Handler {
 	}
 }
 
+func (h httpHandler) FindProducts() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		var params product_model.FindProductsInput
+		err := h.reqUtil.Read(ctx.Context(), ctx.QueryParser, &params)
+		if err != nil {
+			return failure.ErrInput
+		}
+
+		var userId *int64
+		ui, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
+		if err == nil {
+			userId = &ui
+		}
+
+		rawResult, count, err := h.uc.FindProducts(params)
+		if err != nil {
+			return err
+		}
+
+		realResult, err := h.uc.GetProductsInfo(rawResult, userId)
+		if err != nil {
+			return err
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(common.Response{
+			Status: common.SuccessStatus,
+			Result: product_model.FetchProductsResponse{
+				Products: realResult,
+				Count:    count,
+			},
+		})
+	}
+}
+
 func (h httpHandler) GetProduct() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		productId := ctx.Params("internal_id", "")

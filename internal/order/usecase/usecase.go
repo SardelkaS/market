@@ -245,7 +245,7 @@ func (u *uc) FetchOrderProducts(input order_model.FetchOrderProductsParams) (*or
 	}, nil
 }
 
-func (u *uc) GetOrdersInfo(orders []order_model.Order) ([]order_model.OrderInfo, error) {
+func (u *uc) GetOrdersInfo(orders []order_model.Order, productsLimit *int64) ([]order_model.OrderInfo, error) {
 	var ids []int64
 	for _, orderData := range orders {
 		ids = append(ids, *orderData.Id)
@@ -255,6 +255,32 @@ func (u *uc) GetOrdersInfo(orders []order_model.Order) ([]order_model.OrderInfo,
 	if err != nil {
 		fmt.Printf("Error to get orders (%v) info: %s", ids, err.Error())
 		return nil, fmt.Errorf("error to get orders info")
+	}
+
+	if productsLimit != nil && len(ordersInfo) > 0 {
+		for i := range ordersInfo {
+			products, err := u.repo.FetchOrderProducts(order_model.FetchOrderProductsGatewayInput{
+				OrderId: ordersInfo[i].Id,
+				Limit:   productsLimit,
+			})
+			if err != nil {
+				fmt.Printf("Error to fetch order %d products: %s\n", *ordersInfo[i].Id, err.Error())
+				return nil, fmt.Errorf("error to fetch order products")
+			}
+
+			var pIds []int64
+			for _, productData := range products {
+				pIds = append(pIds, *productData.Id)
+			}
+
+			productsInfo, err := u.productRepo.GetProductsInfo(pIds, ordersInfo[0].UserId)
+			if err != nil {
+				fmt.Printf("Error to fetch order %d products: %s\n", *ordersInfo[i].Id, err.Error())
+				return nil, fmt.Errorf("error to fetch order products")
+			}
+
+			ordersInfo[i].Products = productsInfo
+		}
 	}
 
 	return ordersInfo, nil
