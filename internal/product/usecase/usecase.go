@@ -78,6 +78,10 @@ func (u *uc) FetchProducts(input product_model.FetchProductsInput) ([]product_mo
 		MaxPrice:      input.MaxPrice,
 		Show:          input.Show,
 		Sort:          input.Sort,
+		UserId:        input.UserId,
+		Liked:         input.Like,
+		Sexes:         input.Sexes,
+		Countries:     input.Countries,
 		Limit:         input.Limit,
 		Offset:        input.Offset,
 	}

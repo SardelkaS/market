@@ -165,7 +165,7 @@ func (p *postgres) FetchProducts(input product_model.FetchProductsGatewayInput) 
 	}
 	query += ` LIMIT $10 OFFSET $11`
 	err := p.db.Select(&result, query, input.SubcategoryId, pq.Array(input.Manufacturers), input.MinPrice, input.MaxPrice,
-		input.Show, input.UserId, input.Likes, pq.Array(input.Sexes), pq.Array(input.Countries), input.Limit, input.Offset)
+		input.Show, input.UserId, input.Liked, pq.Array(input.Sexes), pq.Array(input.Countries), input.Limit, input.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -191,7 +191,7 @@ func (p *postgres) GetProductsCount(input product_model.FetchProductsGatewayInpu
 							and (s.name = any($8) or $8 is null)
 							and (c.name = any($9) or $9 is null)`,
 		input.SubcategoryId, pq.Array(input.Manufacturers), input.MinPrice, input.MaxPrice, input.Show,
-		input.UserId, input.Likes, pq.Array(input.Sexes), pq.Array(input.Countries))
+		input.UserId, input.Liked, pq.Array(input.Sexes), pq.Array(input.Countries))
 	if err != nil {
 		return nil, err
 	}

@@ -8,7 +8,7 @@ type FetchProductsGatewayInput struct {
 	Show          *bool
 	Sort          *string
 	UserId        *int64
-	Likes         *bool
+	Liked         *bool
 	Sexes         []string
 	Countries     []string
 	Limit         *int64
