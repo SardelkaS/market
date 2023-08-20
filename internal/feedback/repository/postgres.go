@@ -106,7 +106,8 @@ select
     f.message,
     f.pictures,
     (select count(*) from feedback_like fl where fl.feedback_id = f.id) as likes,
-    (select count(*) from feedback_like fl where fl.feedback_id = f.id and fl.user_id = $2) > 0 as liked
+    (select count(*) from feedback_like fl where fl.feedback_id = f.id and fl.user_id = $2) > 0 as liked,
+    f.user_id = $2 as is_my
 	from feedback f 
 		left join "user" u on u.id = f.user_id
 		left outer join product p on p.id = f.product_id

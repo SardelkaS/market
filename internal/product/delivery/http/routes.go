@@ -14,7 +14,9 @@ func MapRoutes(r fiber.Router, mw auth.HttpHandler, h product.HttpHandler) {
 	r.Get("/", mw.SetUser(), h.FetchProducts())
 	r.Get("/find", mw.SetUser(), h.FindProducts())
 	r.Get("/recently", mw.SetUser(), h.FetchRecentlyViewedProducts())
+	r.Get("/bought", mw.SetUser(), h.FetchBoughtProducts())
 	r.Get("/:internal_id", mw.SetUser(), h.GetProduct())
+	r.Get("/:internal_id/stars", mw.SetUser(), h.FetchProductStars())
 
 	r.Put("/:internal_id/like", mw.ValidateAccessToken(), h.LikeProduct())
 	r.Put("/:internal_id/unlike", mw.ValidateAccessToken(), h.UnlikeProduct())

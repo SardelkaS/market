@@ -29,4 +29,5 @@ type FeedbackInfo struct {
 	Pictures          pq.StringArray `json:"pictures" db:"pictures"`
 	Likes             *int64         `json:"likes" db:"likes"`
 	Liked             *bool          `json:"liked" db:"liked"`
+	IsMy              *bool          `json:"is_my" db:"is_my"`
 }

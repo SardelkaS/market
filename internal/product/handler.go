@@ -10,7 +10,9 @@ type HttpHandler interface {
 	FetchProducts() fiber.Handler
 	FindProducts() fiber.Handler
 	GetProduct() fiber.Handler
+	FetchProductStars() fiber.Handler
 	LikeProduct() fiber.Handler
 	UnlikeProduct() fiber.Handler
 	FetchRecentlyViewedProducts() fiber.Handler
+	FetchBoughtProducts() fiber.Handler
 }

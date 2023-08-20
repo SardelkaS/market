@@ -254,6 +254,22 @@ func (p *postgres) UnlikeProduct(productId int64, userId int64) error {
 	return err
 }
 
+func (p *postgres) FetchProductStars(productId int64) ([]product_model.ProductStars, error) {
+	var result []product_model.ProductStars
+	err := p.db.Select(&result, `
+select 
+    stars,
+    count(*) as "count"
+	from feedback
+		where product_id = $1
+		group by stars`,
+		productId)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 func (p *postgres) GetProductsInfo(ids []int64, userId *int64) ([]product_model.ProductInfo, error) {
 	var result []product_model.ProductInfo
 	err := p.db.Select(&result, `
@@ -305,4 +321,36 @@ func (p *postgres) FetchRecentlyViewedIds(userId int64, limit int64) ([]int64, e
 		return nil, err
 	}
 	return result, nil
+}
+
+func (p *postgres) FetchBoughtIds(userId int64, limit *int64, offset *int64) ([]int64, error) {
+	var result []int64
+	err := p.db.Select(&result, `
+select distinct op.product_id
+	from "order"
+		left join order_products op on "order".id = op.order_id
+			where user_id = $1
+				and status_id = 5
+			limit $2 offset $3`,
+		userId, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (p *postgres) GetBoughtCount(userId int64) (*int64, error) {
+	var result int64
+	err := p.db.Select(&result, `
+select count(*) from (
+	select distinct op.product_id
+		from "order"
+			left join order_products op on "order".id = op.order_id
+				where user_id = $1
+					and status_id = 5) res`,
+		userId)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
 }

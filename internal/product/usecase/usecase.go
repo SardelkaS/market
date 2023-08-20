@@ -163,6 +163,21 @@ func (u *uc) UnlikeProduct(internalId string, userId int64) error {
 	return nil
 }
 
+func (u *uc) FetchProductStars(internalId string) ([]product_model.ProductStars, error) {
+	productData, err := u.GetProduct(internalId)
+	if err != nil {
+		return nil, err
+	}
+
+	result, err := u.repo.FetchProductStars(*productData.Id)
+	if err != nil {
+		fmt.Printf("Error to fetch product %s stars: %s", internalId, err.Error())
+		return nil, fmt.Errorf("error to fetch product stars")
+	}
+
+	return result, nil
+}
+
 func (u *uc) UpdateProductCount(internalId string, count int64) error {
 	if count < 0 {
 		return fmt.Errorf("wrong count")
@@ -202,6 +217,27 @@ func (u *uc) FetchRecentlyViewedProductsInfo(userId int64, limit int64) ([]produ
 		return nil, fmt.Errorf("error to get products info")
 	}
 	return result, nil
+}
+
+func (u *uc) FetchBoughtProductsInfo(userId int64, limit *int64, offset *int64) ([]product_model.ProductInfo, *int64, error) {
+	ids, err := u.repo.FetchBoughtIds(userId, limit, offset)
+	if err != nil {
+		fmt.Printf("Error to fetch bought by user %d products: %s", userId, err.Error())
+		return nil, nil, fmt.Errorf("error to fetch bought products")
+	}
+
+	count, err := u.repo.GetBoughtCount(userId)
+	if err != nil {
+		fmt.Printf("Error to get bought count by user %d products: %s", userId, err.Error())
+		return nil, nil, fmt.Errorf("error to get bought products")
+	}
+
+	result, err := u.repo.GetProductsInfo(ids, &userId)
+	if err != nil {
+		fmt.Printf("Error to get products info: %s", err.Error())
+		return nil, nil, fmt.Errorf("error to get products info")
+	}
+	return result, count, nil
 }
 
 func (u *uc) GetProductsInfo(input []product_model.Product, userId *int64) ([]product_model.ProductInfo, error) {

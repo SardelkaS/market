@@ -54,3 +54,8 @@ type CategoryInfo struct {
 	Name          *string  `json:"name" db:"name"`
 	Subcategories []string `json:"subcategories" db:"-"`
 }
+
+type ProductStars struct {
+	Stars *int64 `json:"stars" db:"stars"`
+	Count *int64 `json:"count" db:"count"`
+}

@@ -187,6 +187,25 @@ func (h httpHandler) GetProduct() fiber.Handler {
 	}
 }
 
+func (h httpHandler) FetchProductStars() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		productId := ctx.Params("internal_id", "")
+		if productId == "" {
+			return failure.ErrInput
+		}
+
+		result, err := h.uc.FetchProductStars(productId)
+		if err != nil {
+			return err
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(common.Response{
+			Status: common.SuccessStatus,
+			Result: result,
+		})
+	}
+}
+
 func (h httpHandler) LikeProduct() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		productId := ctx.Params("internal_id", "")
@@ -253,6 +272,40 @@ func (h httpHandler) FetchRecentlyViewedProducts() fiber.Handler {
 		return ctx.Status(fiber.StatusOK).JSON(common.Response{
 			Status: common.SuccessStatus,
 			Result: result,
+		})
+	}
+}
+
+func (h httpHandler) FetchBoughtProducts() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
+		if err != nil {
+			return failure.ErrToGetUser
+		}
+
+		var paramLimit *int64
+		limit, err := strconv.ParseInt(ctx.Query("limit", ""), 10, 64)
+		if err == nil {
+			paramLimit = &limit
+		}
+
+		var paramOffset *int64
+		offset, err := strconv.ParseInt(ctx.Query("offset", ""), 10, 64)
+		if err == nil {
+			paramOffset = &offset
+		}
+
+		result, count, err := h.uc.FetchBoughtProductsInfo(userId, paramLimit, paramOffset)
+		if err != nil {
+			return err
+		}
+
+		return ctx.Status(fiber.StatusOK).JSON(common.Response{
+			Status: common.SuccessStatus,
+			Result: product_model.FetchProductsResponse{
+				Products: result,
+				Count:    count,
+			},
 		})
 	}
 }

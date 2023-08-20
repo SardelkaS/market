@@ -14,10 +14,14 @@ type UC interface {
 	LikeProduct(internalId string, userId int64) error
 	UnlikeProduct(internalId string, userId int64) error
 
+	FetchProductStars(internalId string) ([]product_model.ProductStars, error)
+
 	UpdateProductCount(internalId string, count int64) error
 
 	ViewProduct(userId int64, productInternalId string) error
 	FetchRecentlyViewedProductsInfo(userId int64, limit int64) ([]product_model.ProductInfo, error)
+
+	FetchBoughtProductsInfo(userId int64, limit *int64, offset *int64) ([]product_model.ProductInfo, *int64, error)
 
 	GetProductsInfo(input []product_model.Product, userId *int64) ([]product_model.ProductInfo, error)
 }
