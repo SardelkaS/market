@@ -341,7 +341,7 @@ select distinct op.product_id
 
 func (p *postgres) GetBoughtCount(userId int64) (*int64, error) {
 	var result int64
-	err := p.db.Select(&result, `
+	err := p.db.Get(&result, `
 select count(*) from (
 	select distinct op.product_id
 		from "order"

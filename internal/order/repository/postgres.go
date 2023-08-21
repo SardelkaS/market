@@ -2,6 +2,7 @@ package order_repository
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/lib/pq"
 	"market_auth/internal/order"
 	order_model "market_auth/internal/order/model"
 	product_model "market_auth/internal/product/model"
@@ -65,8 +66,8 @@ func (p *postgres) CancelOrder(orderId string) error {
 
 func (p *postgres) FetchOrders(input order_model.FetchOrdersGatewayInput) ([]order_model.Order, error) {
 	var result []order_model.Order
-	err := p.db.Select(&result, `select * from "order"
-         								left join order_status os on "order".status_id = os.id
+	err := p.db.Select(&result, `select o.* from "order" o
+         								left join order_status os on o.status_id = os.id
 										where (user_id = $1 or $1 is null)
 											and (os.name = $2 or $2 is null)
 										limit $3 offset $4`,
@@ -158,7 +159,7 @@ func (p *postgres) GetOrdersInfo(ids []int64) ([]order_model.OrderInfo, error) {
 			              		where op.order_id = o.id) as cost
 			    	from "order" o
 					left join order_status os on o.status_id = os.id
-						where o.id = any($1)`, ids)
+						where o.id = any($1)`, pq.Array(ids))
 	if err != nil {
 		return nil, err
 	}
