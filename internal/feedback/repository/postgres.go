@@ -80,7 +80,7 @@ func (p postgres) GetFeedbackCount(productId *int64, userId *int64) (*int64, err
 
 func (p postgres) CheckIsFeedbackLiked(feedbackId int64, userId int64) (*bool, error) {
 	var result bool
-	err := p.db.Get(&result, `select count(*) > from feedback_like where feedback_id = $1 and user_id = $2`,
+	err := p.db.Get(&result, `select count(*) > 0 from feedback_like where feedback_id = $1 and user_id = $2`,
 		feedbackId, userId)
 	if err != nil {
 		return nil, err
