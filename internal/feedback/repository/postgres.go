@@ -78,6 +78,16 @@ func (p postgres) GetFeedbackCount(productId *int64, userId *int64) (*int64, err
 	return &result, nil
 }
 
+func (p postgres) CheckIsFeedbackLiked(feedbackId int64, userId int64) (*bool, error) {
+	var result bool
+	err := p.db.Get(&result, `select count(*) > from feedback_like where feedback_id = $1 and user_id = $2`,
+		feedbackId, userId)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 func (p postgres) LikeFeedback(feedbackId *int64, userId *int64) (*int64, error) {
 	var id int64
 	err := p.db.QueryRowx(`insert into feedback_like(feedback_id, user_id) values($1, $2) returning id`,

@@ -139,6 +139,16 @@ func (u *uc) LikeFeedback(feedbackId string, userId int64) error {
 		return fmt.Errorf("it's your feedback")
 	}
 
+	isLiked, err := u.repo.CheckIsFeedbackLiked(*feedbackData.Id, userId)
+	if err != nil {
+		fmt.Printf("Error to check is feedback %s liked by %d: %s", feedbackId, userId, err.Error())
+		return fmt.Errorf("error to like feedback")
+	}
+
+	if isLiked == nil || *isLiked {
+		return fmt.Errorf("feedback already liked")
+	}
+
 	_, err = u.repo.LikeFeedback(feedbackData.Id, &userId)
 	if err != nil {
 		fmt.Printf("Error to like feedback %s: %s\n", feedbackId, err.Error())
