@@ -29,6 +29,10 @@ type Config struct {
 		AccessLifeTime  int64  `yaml:"access_life_time"`
 		Secret          string `yaml:"secret"`
 	} `yaml:"auth"`
+	TgBot struct {
+		Token  string `yaml:"token"`
+		ChatId int64  `yaml:"chat_id"`
+	} `yaml:"tg_bot"`
 }
 
 func LoadConfig(path string) (*Config, error) {

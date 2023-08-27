@@ -1,5 +1,11 @@
 # Market
 
+## Introduction
+Simple implementation of an online store.
+It has a flexible configuration through the database, 
+so it can be used to sell any goods. This version does 
+not support online payment, however, it is quite simple to add it.
+
 ## Config
 ```
 service:
@@ -19,6 +25,9 @@ auth:
   refresh_life_time: 0
   access_life_time: 0
   secret: ''
+tg_bot:
+  token: ""
+  chat_id: 0
 ```
 
 ## Run

@@ -83,7 +83,7 @@ func (h httpHandler) AttachProductToOrder() fiber.Handler {
 
 		body.UserId = &userId
 		body.OrderId = &orderId
-		err = h.uc.AttachProductToOrder(body)
+		_, err = h.uc.AttachProductToOrder(body)
 		if err != nil {
 			return err
 		}

@@ -18,6 +18,8 @@ import (
 	"market_auth/internal/product"
 	product_repository "market_auth/internal/product/repository"
 	product_usecase "market_auth/internal/product/usecase"
+	"market_auth/internal/tg_bot"
+	tg_bot_usecase "market_auth/internal/tg_bot/usecase"
 	"market_auth/pkg/db"
 	"market_auth/pkg/logger"
 )
@@ -56,7 +58,11 @@ func (a *App) Init() error {
 
 	a.UC["auth"] = auth_usecase.NewUC(a.Repo["authPostgres"].(auth.Repository), a.Repo["authRedis"].(auth.CacheRepository), a.cfg, a.UC["logger"].(logger.UC))
 	a.UC["basket"] = basket_usecase.New(a.Repo["basket"].(basket.Repository), a.Repo["product"].(product.Repository))
-	a.UC["order"] = order_usecase.New(a.Repo["order"].(order.Repository), a.Repo["product"].(product.Repository))
+	a.UC["tg_bot"], err = tg_bot_usecase.New(a.cfg)
+	if err != nil {
+		return err
+	}
+	a.UC["order"] = order_usecase.New(a.Repo["order"].(order.Repository), a.Repo["product"].(product.Repository), a.UC["tg_bot"].(tg_bot.UC))
 	a.UC["product"] = product_usecase.New(a.Repo["product"].(product.Repository))
 	a.UC["feedback"] = feedback_usecase.New(a.Repo["feedback"].(feedback.Repository), a.UC["product"].(product.UC))
 

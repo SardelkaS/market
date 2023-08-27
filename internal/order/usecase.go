@@ -4,7 +4,7 @@ import order_model "market_auth/internal/order/model"
 
 type UC interface {
 	CreateOrder(input order_model.CreateOrderBody) (*order_model.Order, error)
-	AttachProductToOrder(input order_model.AttachProductBody) error
+	AttachProductToOrder(input order_model.AttachProductBody) ([]string, error)
 
 	RemoveProductFromOrder(input order_model.RemoveProductFromOrderBody) error
 	UpdateProductCount(input order_model.UpdateProductsCountBody) error

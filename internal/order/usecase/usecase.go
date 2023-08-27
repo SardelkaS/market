@@ -6,18 +6,22 @@ import (
 	"market_auth/internal/order"
 	order_model "market_auth/internal/order/model"
 	"market_auth/internal/product"
+	"market_auth/internal/tg_bot"
+	tg_bot_model "market_auth/internal/tg_bot/model"
 	"market_auth/pkg/secure"
 )
 
 type uc struct {
 	repo        order.Repository
 	productRepo product.Repository
+	tgBot       tg_bot.UC
 }
 
-func New(repo order.Repository, productRepo product.Repository) order.UC {
+func New(repo order.Repository, productRepo product.Repository, tgBot tg_bot.UC) order.UC {
 	return &uc{
 		repo:        repo,
 		productRepo: productRepo,
+		tgBot:       tgBot,
 	}
 }
 
@@ -42,8 +46,9 @@ func (u *uc) CreateOrder(input order_model.CreateOrderBody) (*order_model.Order,
 		return nil, fmt.Errorf("error to create order")
 	}
 
+	var productsNames []string
 	if len(input.Products) > 0 {
-		err = u.AttachProductToOrder(order_model.AttachProductBody{
+		productsNames, err = u.AttachProductToOrder(order_model.AttachProductBody{
 			OrderId:  orderData.InternalId,
 			Products: input.Products,
 		})
@@ -52,19 +57,26 @@ func (u *uc) CreateOrder(input order_model.CreateOrderBody) (*order_model.Order,
 		}
 	}
 
+	go u.tgBot.NotifyNewOrder(tg_bot_model.NotifyNewOrderLogicInput{
+		InternalId:  *orderData.InternalId,
+		Products:    productsNames,
+		ContactData: *input.ContactData,
+	})
+
 	return orderData, nil
 }
 
-func (u *uc) AttachProductToOrder(input order_model.AttachProductBody) error {
+func (u *uc) AttachProductToOrder(input order_model.AttachProductBody) ([]string, error) {
 	if input.OrderId == nil {
-		return fmt.Errorf("wrong input")
+		return nil, fmt.Errorf("wrong input")
 	}
 	orderData, err := u.repo.GetOrderByInternalId(*input.OrderId)
 	if err != nil {
 		fmt.Printf("Error to get order %s: %s\n", *input.OrderId, err.Error())
-		return fmt.Errorf("order not found")
+		return nil, fmt.Errorf("order not found")
 	}
 
+	var productsNames []string
 	for _, inputProduct := range input.Products {
 		if inputProduct.ProductId == nil {
 			continue
@@ -72,8 +84,9 @@ func (u *uc) AttachProductToOrder(input order_model.AttachProductBody) error {
 		productData, err := u.productRepo.GetProductByInternalId(*inputProduct.ProductId)
 		if err != nil {
 			fmt.Printf("Error to get product %s: %s\n", *inputProduct.ProductId, err.Error())
-			return fmt.Errorf("product not found")
+			return nil, fmt.Errorf("product not found")
 		}
+		productsNames = append(productsNames, *productData.Name)
 
 		if inputProduct.Count == nil {
 			count := int64(1)
@@ -83,10 +96,10 @@ func (u *uc) AttachProductToOrder(input order_model.AttachProductBody) error {
 		_, err = u.repo.AttachProductToOrder(*orderData.Id, *productData.Id, *inputProduct.Count)
 		if err != nil {
 			fmt.Printf("Error to attach produst %s to order %s: %s", *inputProduct.ProductId, *input.OrderId, err.Error())
-			return fmt.Errorf("error to attach product")
+			return nil, fmt.Errorf("error to attach product")
 		}
 	}
-	return nil
+	return productsNames, nil
 }
 
 func (u *uc) RemoveProductFromOrder(input order_model.RemoveProductFromOrderBody) error {
