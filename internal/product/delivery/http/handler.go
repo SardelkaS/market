@@ -157,9 +157,10 @@ func (h httpHandler) GetProduct() fiber.Handler {
 			return failure.ErrInput
 		}
 
+		var paramsUserId *int64
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
-		if err != nil {
-			return failure.ErrToGetUser
+		if err == nil {
+			paramsUserId = &userId
 		}
 
 		rawResult, err := h.uc.GetProduct(productId)
@@ -170,7 +171,7 @@ func (h httpHandler) GetProduct() fiber.Handler {
 			return fmt.Errorf("error to get product")
 		}
 
-		realResult, err := h.uc.GetProductsInfo([]product_model.Product{*rawResult}, &userId)
+		realResult, err := h.uc.GetProductsInfo([]product_model.Product{*rawResult}, paramsUserId)
 		if err != nil {
 			return err
 		}
@@ -178,7 +179,9 @@ func (h httpHandler) GetProduct() fiber.Handler {
 			return fmt.Errorf("error to get product info")
 		}
 
-		_ = h.uc.ViewProduct(userId, productId)
+		if paramsUserId != nil {
+			_ = h.uc.ViewProduct(*paramsUserId, productId)
+		}
 
 		return ctx.Status(fiber.StatusOK).JSON(common.Response{
 			Status: common.SuccessStatus,
