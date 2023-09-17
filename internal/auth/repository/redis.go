@@ -34,8 +34,8 @@ func NewRedisClient(cfg *config.Config, logger logger.UC) auth.CacheRepository {
 		redisClient: c,
 		config:      cfg,
 		logger:      logger,
-		accessTime:  time.Duration(cfg.Auth.AccessLifeTime),
-		refreshTime: time.Duration(cfg.Auth.RefreshLifeTime),
+		accessTime:  time.Second * time.Duration(cfg.Auth.AccessLifeTime),
+		refreshTime: time.Second * time.Duration(cfg.Auth.RefreshLifeTime),
 	}
 }
 

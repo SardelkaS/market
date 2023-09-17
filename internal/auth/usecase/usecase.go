@@ -55,12 +55,12 @@ func (u *uc) SignIn(input auth_model.SignInLogicInput) (*auth_model.SignInToken,
 		return nil, failure.ErrPasswordNotCorrect
 	}
 
-	accessToken, err := u.GenerateToken(time.Duration(u.cfg.Auth.AccessLifeTime))
+	accessToken, err := u.GenerateToken(time.Second * time.Duration(u.cfg.Auth.AccessLifeTime))
 	if err != nil {
 		u.logger.Log(logger.Error, fmt.Sprintf("generate access token for auth %s error: %s", *input.Login, err.Error()))
 		return nil, failure.ErrJWTGenerate
 	}
-	refreshToken, err := u.GenerateToken(time.Duration(u.cfg.Auth.RefreshLifeTime))
+	refreshToken, err := u.GenerateToken(time.Second * time.Duration(u.cfg.Auth.RefreshLifeTime))
 	if err != nil {
 		u.logger.Log(logger.Error, fmt.Sprintf("generate refresh token for auth %s error: %s", *input.Login, err.Error()))
 		return nil, failure.ErrJWTGenerate
@@ -124,12 +124,12 @@ func (u *uc) SignUp(params auth_model.SignUpLogicInput) (*auth_model.SignUpToken
 		return nil, failure.ErrInternal
 	}
 
-	accessToken, err := u.GenerateToken(time.Duration(u.cfg.Auth.AccessLifeTime))
+	accessToken, err := u.GenerateToken(time.Second * time.Duration(u.cfg.Auth.AccessLifeTime))
 	if err != nil {
 		u.logger.Log(logger.Error, fmt.Sprintf("Generate access token for auth %s error: %s", params.Login, err.Error()))
 		return nil, failure.ErrJWTGenerate
 	}
-	refreshToken, err := u.GenerateToken(time.Duration(u.cfg.Auth.RefreshLifeTime))
+	refreshToken, err := u.GenerateToken(time.Second * time.Duration(u.cfg.Auth.RefreshLifeTime))
 	if err != nil {
 		u.logger.Log(logger.Error, fmt.Sprintf("Generate refresh token for auth %s error: %s", params.Login, err.Error()))
 		return nil, failure.ErrJWTGenerate
@@ -188,12 +188,12 @@ func (u *uc) GenerateRefresh(params auth_model.GenerateRefreshLogicInput) (*auth
 		return nil, failure.ErrJWTNotValid
 	}
 
-	accessToken, err := u.GenerateToken(time.Duration(u.cfg.Auth.AccessLifeTime))
+	accessToken, err := u.GenerateToken(time.Second * time.Duration(u.cfg.Auth.AccessLifeTime))
 	if err != nil {
 		u.logger.Log(logger.Error, fmt.Sprintf("Generate access token for finger key %s error: %s", params.FingerKey, err.Error()))
 		return nil, failure.ErrJWTGenerate
 	}
-	refreshToken, err := u.GenerateToken(time.Duration(u.cfg.Auth.RefreshLifeTime))
+	refreshToken, err := u.GenerateToken(time.Second * time.Duration(u.cfg.Auth.RefreshLifeTime))
 	if err != nil {
 		u.logger.Log(logger.Error, fmt.Sprintf("Generate refresh token for finger key %s error: %s", params.FingerKey, err.Error()))
 		return nil, failure.ErrJWTGenerate
