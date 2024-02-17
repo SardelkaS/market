@@ -6,7 +6,7 @@ services:
       - "7732:7732"
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: core/Dockerfile
     restart: unless-stopped
     container_name: market_service
   market_postgres:
@@ -16,7 +16,7 @@ services:
       - "5876:5432"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=market_auth
+      - POSTGRES_DB=market
       - POSTGRES_PASSWORD=TestPwd
     restart: unless-stopped
   market_redis:
