@@ -12,6 +12,7 @@ type Config struct {
 		Host    string `yaml:"host"`
 		Port    string `yaml:"port"`
 		Version string `yaml:"version"`
+		Name    string `yaml:"name"`
 	} `yaml:"service"`
 	Postgres struct {
 		Host     string `yaml:"host"`
@@ -38,7 +39,10 @@ type Config struct {
 		ApiPublic  string `yaml:"-"`
 		ApiPrivate string `yaml:"-"`
 	} `yaml:"-"`
-	CoreUrl string `yaml:"core_url"`
+	Core struct {
+		Url  string `yaml:"url"`
+		Name string `yaml:"name"`
+	} `yaml:"core"`
 }
 
 func LoadConfig(path string) (*Config, error) {

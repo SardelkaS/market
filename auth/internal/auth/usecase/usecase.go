@@ -346,7 +346,19 @@ func (u *uc) GetUserInfoById(id int64) (*auth_model.UserInfo, error) {
 }
 
 func (u *uc) Proxy(req *fasthttp.Request, res *fasthttp.Response) error {
-	req.SetHost(u.cfg.CoreUrl)
+	secret, ok := u.cfg.Secrets[u.cfg.Core.Name]
+	if !ok {
+		return failure.ErrAuth
+	}
+
+	timestamp := time.Now().String()
+	requestId := secure.CalcInternalId(timestamp)
+
+	req.SetHost(u.cfg.Core.Url)
+	req.Header.Set("Service", u.cfg.Service.Name)
+	req.Header.Set("Timestamp", timestamp)
+	req.Header.Set("RequestId", requestId)
+	req.Header.Set("Signature", secret.ApiPublic+timestamp+requestId+string(req.Body()))
 
 	err := fasthttp.Do(req, res)
 	if err != nil {

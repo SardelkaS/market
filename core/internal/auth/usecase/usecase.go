@@ -20,7 +20,7 @@ func New(cfg *config.Config) auth.UC {
 func (u *uc) VerifySignature(service, signature, body, timestamp, requestId string) (bool, error) {
 	secret, ok := u.cfg.Secrets[service]
 	if !ok {
-		return false, failure.ErrServiceNotFound
+		return false, failure.ErrAuth
 	}
 
 	return signature == secure.CalcSignature(secret.ApiPrivate, secret.ApiPublic+timestamp+requestId+body), nil

@@ -1,8 +1,8 @@
 package db
 
 import (
+	"auth/config"
 	"fmt"
-	"market_auth/config"
 
 	"github.com/guregu/null"
 	_ "github.com/jackc/pgx/stdlib" // pgx driver
