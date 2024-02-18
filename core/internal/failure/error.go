@@ -14,4 +14,5 @@ var (
 	ErrChangeTimezone     = errors.New("error to change timezone")
 	ErrToGetUser          = errors.New("user not found")
 	ErrToUpdateUser       = errors.New("error to update user")
+	ErrServiceNotFound    = errors.New("service not found")
 )
