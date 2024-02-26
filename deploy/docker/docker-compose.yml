@@ -1,0 +1,47 @@
+version: '2'
+
+services:
+  auth_service:
+    ports:
+      - "7733:7733"
+    build:
+      context: ../../auth
+      dockerfile: ../../auth/Dockerfile
+    restart: unless-stopped
+    container_name: auth_service
+  auth_postgres:
+    image: postgres:latest
+    container_name: auth_postgres
+    ports:
+      - "5877:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=auth
+      - POSTGRES_PASSWORD=TestPwd
+    restart: unless-stopped
+  auth_redis:
+    image: redis:6.2-alpine
+    container_name: auth_redis
+    restart: always
+    ports:
+      - '6387:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass TestPwd
+
+  core_service:
+    ports:
+      - "7732:7732"
+    build:
+      context: ../../core
+      dockerfile: ../../core/Dockerfile
+    restart: unless-stopped
+    container_name: core_service
+  core_postgres:
+    image: postgres:latest
+    container_name: core_postgres
+    ports:
+      - "5876:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=core
+      - POSTGRES_PASSWORD=TestPwd
+    restart: unless-stopped
