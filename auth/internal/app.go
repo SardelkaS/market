@@ -7,6 +7,7 @@ import (
 	auth_usecase "auth/internal/auth/usecase"
 	"auth/pkg/db"
 	"auth/pkg/logger"
+	"fmt"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -28,7 +29,16 @@ func NewApp(cfg *config.Config) *App {
 
 func (a *App) Init() error {
 	var err error
-	a.dbConnection["postgres"], err = db.InitPsqlDB(a.cfg)
+
+	connectionUrl := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		a.cfg.Postgres.Host,
+		a.cfg.Postgres.Port,
+		a.cfg.Postgres.User,
+		a.cfg.Postgres.Password,
+		a.cfg.Postgres.DBName,
+		a.cfg.Postgres.SSLMode)
+
+	a.dbConnection["postgres"], err = db.InitPsqlDB(connectionUrl)
 	if err != nil {
 		return err
 	}

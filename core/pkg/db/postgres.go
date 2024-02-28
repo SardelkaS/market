@@ -2,8 +2,6 @@ package db
 
 import (
 	"fmt"
-	"market_auth/config"
-
 	"github.com/guregu/null"
 	_ "github.com/jackc/pgx/stdlib" // pgx driver
 	"github.com/jmoiron/sqlx"
@@ -21,14 +19,7 @@ type Comment struct {
 	UpdatedAtNormal string
 }
 
-func InitPsqlDB(c *config.Config) (*sqlx.DB, error) {
-	connectionUrl := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		c.Postgres.Host,
-		c.Postgres.Port,
-		c.Postgres.User,
-		c.Postgres.Password,
-		c.Postgres.DBName,
-		"disable")
+func InitPsqlDB(connectionUrl string) (*sqlx.DB, error) {
 	database, err := sqlx.Connect("pgx", connectionUrl)
 	if err != nil {
 		fmt.Println("POSTGRES CONNECTION ERROR: ", connectionUrl)
