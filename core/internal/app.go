@@ -2,7 +2,6 @@ package internal
 
 import (
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	"market_auth/config"
 	"market_auth/internal/basket"
 	basket_repository "market_auth/internal/basket/repository"
@@ -41,13 +40,18 @@ func NewApp(cfg *config.Config) *App {
 func (a *App) Init() error {
 	var err error
 
-	connectionUrl := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+	connectionUrl := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s pool_max_conns=%s pool_min_conns=%s pool_max_conn_lifetime=%s pool_max_conn_idle_time=%s pool_health_check_period=%s",
 		a.cfg.Postgres.Host,
 		a.cfg.Postgres.Port,
 		a.cfg.Postgres.User,
 		a.cfg.Postgres.Password,
 		a.cfg.Postgres.DBName,
-		a.cfg.Postgres.SSLMode)
+		a.cfg.Postgres.SSLMode,
+		a.cfg.Postgres.MaxConns,
+		a.cfg.Postgres.MinConns,
+		a.cfg.Postgres.MaxConnLifetime,
+		a.cfg.Postgres.MaxConnIdleTime,
+		a.cfg.Postgres.HealthCheckDuration)
 
 	a.dbConnection["postgres"], err = db.InitPsqlDB(connectionUrl)
 	if err != nil {
@@ -56,10 +60,10 @@ func (a *App) Init() error {
 
 	a.UC["logger"] = logger.New()
 
-	a.Repo["basket"] = basket_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
-	a.Repo["order"] = order_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
-	a.Repo["product"] = product_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
-	a.Repo["feedback"] = feedback_repository.NewPostgresRepo(a.dbConnection["postgres"].(*sqlx.DB))
+	a.Repo["basket"] = basket_repository.NewPostgresRepo(a.dbConnection["postgres"].(db.Connection))
+	a.Repo["order"] = order_repository.NewPostgresRepo(a.dbConnection["postgres"].(db.Connection))
+	a.Repo["product"] = product_repository.NewPostgresRepo(a.dbConnection["postgres"].(db.Connection))
+	a.Repo["feedback"] = feedback_repository.NewPostgresRepo(a.dbConnection["postgres"].(db.Connection))
 
 	a.UC["basket"] = basket_usecase.New(a.Repo["basket"].(basket.Repository), a.Repo["product"].(product.Repository))
 	a.UC["tg_bot"], err = tg_bot_usecase.New(a.cfg)

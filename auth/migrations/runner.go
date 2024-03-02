@@ -1,10 +1,10 @@
 package migrations
 
 import (
+	"auth/config"
 	"errors"
 	"fmt"
 	"github.com/golang-migrate/migrate/v4"
-	"market_auth/config"
 
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"

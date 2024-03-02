@@ -14,12 +14,17 @@ type Config struct {
 		Version string `yaml:"version"`
 	} `yaml:"service"`
 	Postgres struct {
-		Host     string `yaml:"host"`
-		Port     string `yaml:"port"`
-		User     string `yaml:"user"`
-		Password string `yaml:"password"`
-		DBName   string `yaml:"db_name"`
-		SSLMode  string `yaml:"ssl_mode"`
+		Host                string `yaml:"host"`
+		Port                string `yaml:"port"`
+		User                string `yaml:"user"`
+		Password            string `yaml:"password"`
+		DBName              string `yaml:"db_name"`
+		SSLMode             string `yaml:"ssl_mode"`
+		MaxConns            string `yaml:"max_conns"`
+		MinConns            string `yaml:"min_conns"`
+		MaxConnLifetime     string `yaml:"max_conn_lifetime"`
+		MaxConnIdleTime     string `yaml:"max_conn_idle_time"`
+		HealthCheckDuration string `yaml:"health_check_duration"`
 	} `yaml:"postgres"`
 	TgBot struct {
 		Token  string `yaml:"token"`

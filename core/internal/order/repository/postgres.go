@@ -1,18 +1,18 @@
 package order_repository
 
 import (
-	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	"market_auth/internal/order"
 	order_model "market_auth/internal/order/model"
 	product_model "market_auth/internal/product/model"
+	"market_auth/pkg/db"
 )
 
 type postgres struct {
-	db *sqlx.DB
+	db db.Connection
 }
 
-func NewPostgresRepo(db *sqlx.DB) order.Repository {
+func NewPostgresRepo(db db.Connection) order.Repository {
 	return &postgres{
 		db: db,
 	}

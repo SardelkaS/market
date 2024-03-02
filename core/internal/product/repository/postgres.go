@@ -1,17 +1,17 @@
 package product_repository
 
 import (
-	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	"market_auth/internal/product"
 	product_model "market_auth/internal/product/model"
+	"market_auth/pkg/db"
 )
 
 type postgres struct {
-	db *sqlx.DB
+	db db.Connection
 }
 
-func NewPostgresRepo(db *sqlx.DB) product.Repository {
+func NewPostgresRepo(db db.Connection) product.Repository {
 	return &postgres{
 		db: db,
 	}

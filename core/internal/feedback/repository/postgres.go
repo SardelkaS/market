@@ -1,17 +1,17 @@
 package feedback_repository
 
 import (
-	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	"market_auth/internal/feedback"
 	feedback_model "market_auth/internal/feedback/model"
+	"market_auth/pkg/db"
 )
 
 type postgres struct {
-	db *sqlx.DB
+	db db.Connection
 }
 
-func NewPostgresRepo(db *sqlx.DB) feedback.Repository {
+func NewPostgresRepo(db db.Connection) feedback.Repository {
 	return &postgres{
 		db: db,
 	}

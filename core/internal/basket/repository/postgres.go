@@ -1,16 +1,16 @@
 package basket_repository
 
 import (
-	"github.com/jmoiron/sqlx"
 	"market_auth/internal/basket"
 	basket_model "market_auth/internal/basket/model"
+	"market_auth/pkg/db"
 )
 
 type postgres struct {
-	db *sqlx.DB
+	db db.Connection
 }
 
-func NewPostgresRepo(db *sqlx.DB) basket.Repository {
+func NewPostgresRepo(db db.Connection) basket.Repository {
 	return &postgres{
 		db: db,
 	}

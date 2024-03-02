@@ -6,5 +6,5 @@ alter table public."feedback" add column if not exists is_removed bool not null 
 create table if not exists feedback_like(
     id bigserial primary key,
     feedback_id bigint not null references feedback(id),
-    user_id bigint not null references "user"(id)
+    user_id bigint not null
 );
