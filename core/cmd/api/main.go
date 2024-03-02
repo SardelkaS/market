@@ -1,10 +1,10 @@
 package main
 
 import (
-	"market_auth/api/http"
-	"market_auth/config"
-	"market_auth/internal"
-	"market_auth/migrations"
+	"core/api/http"
+	"core/config"
+	"core/internal"
+	"core/migrations"
 )
 
 func main() {

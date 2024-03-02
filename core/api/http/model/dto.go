@@ -1,6 +1,6 @@
 package api_http_model
 
-import "market_auth/internal/common"
+import "core/internal/common"
 
 type VersionResponse struct {
 	Version string `json:"version"`

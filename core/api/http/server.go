@@ -1,25 +1,27 @@
 package http
 
 import (
+	"core/api"
+	http_error "core/api/http/error"
+	api_http_model "core/api/http/model"
+	"core/config"
+	"core/internal"
+	"core/internal/auth"
+	auth_http "core/internal/auth/delivery/http"
+	"core/internal/basket"
+	basket_http "core/internal/basket/delivery/http"
+	"core/internal/common"
+	"core/internal/feedback"
+	feedback_http "core/internal/feedback/delivery/http"
+	"core/internal/order"
+	order_http "core/internal/order/delivery/http"
+	"core/internal/product"
+	product_http "core/internal/product/delivery/http"
+	util_http "core/pkg/utils"
 	"fmt"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	loggerMDW "github.com/gofiber/fiber/v2/middleware/logger"
 	recoverMDW "github.com/gofiber/fiber/v2/middleware/recover"
-	"market_auth/api"
-	http_error "market_auth/api/http/error"
-	api_http_model "market_auth/api/http/model"
-	"market_auth/config"
-	"market_auth/internal"
-	"market_auth/internal/basket"
-	basket_http "market_auth/internal/basket/delivery/http"
-	"market_auth/internal/common"
-	"market_auth/internal/feedback"
-	feedback_http "market_auth/internal/feedback/delivery/http"
-	"market_auth/internal/order"
-	order_http "market_auth/internal/order/delivery/http"
-	"market_auth/internal/product"
-	product_http "market_auth/internal/product/delivery/http"
-	util_http "market_auth/pkg/utils"
 
 	goJson "github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
@@ -80,18 +82,19 @@ func (h *httpServer) MapHandlers(app *internal.App) error {
 	orderHandler := order_http.NewHttpHandler(app.UC["order"].(order.UC), app.UC["product"].(product.UC), reqReader)
 	productHandler := product_http.NewHttpHandler(app.UC["product"].(product.UC), reqReader)
 	feedbackHandler := feedback_http.NewHttpHandler(app.UC["feedback"].(feedback.UC), reqReader)
+	authHandler := auth_http.NewHttpHandler(app.UC["auth"].(auth.UC))
 
 	basketGroup := h.fiber.Group("/basket")
-	basket_http.MapRoutes(basketGroup, nil, basketHandler)
+	basket_http.MapRoutes(basketGroup, authHandler, basketHandler)
 
 	orderGroup := h.fiber.Group("/order")
-	order_http.MapRoutes(orderGroup, nil, orderHandler)
+	order_http.MapRoutes(orderGroup, authHandler, orderHandler)
 
 	productGroup := h.fiber.Group("/product")
-	product_http.MapRoutes(productGroup, nil, productHandler)
+	product_http.MapRoutes(productGroup, authHandler, productHandler)
 
 	feedbackGroup := h.fiber.Group("/feedback")
-	feedback_http.MapRoutes(feedbackGroup, nil, feedbackHandler)
+	feedback_http.MapRoutes(feedbackGroup, authHandler, feedbackHandler)
 
 	return nil
 }

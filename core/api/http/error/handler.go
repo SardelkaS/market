@@ -1,9 +1,9 @@
 package error
 
 import (
+	"core/internal/common"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"market_auth/internal/common"
 )
 
 type Handler struct {

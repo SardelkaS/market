@@ -1,7 +1,7 @@
 package order_model
 
 import (
-	product_model "market_auth/internal/product/model"
+	product_model "core/internal/product/model"
 	"time"
 )
 

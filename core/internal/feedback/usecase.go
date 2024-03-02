@@ -1,6 +1,6 @@
 package feedback
 
-import feedback_model "market_auth/internal/feedback/model"
+import feedback_model "core/internal/feedback/model"
 
 type UC interface {
 	CreateFeedback(input feedback_model.CreateFeedbackBody) error

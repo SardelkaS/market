@@ -1,10 +1,10 @@
 package product_repository
 
 import (
+	"core/internal/product"
+	product_model "core/internal/product/model"
+	"core/pkg/db"
 	"github.com/lib/pq"
-	"market_auth/internal/product"
-	product_model "market_auth/internal/product/model"
-	"market_auth/pkg/db"
 )
 
 type postgres struct {

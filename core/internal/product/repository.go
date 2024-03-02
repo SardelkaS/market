@@ -1,6 +1,6 @@
 package product
 
-import product_model "market_auth/internal/product/model"
+import product_model "core/internal/product/model"
 
 type Repository interface {
 	GetProductByInternalId(internalId string) (*product_model.Product, error)

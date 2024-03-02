@@ -1,24 +1,25 @@
 package internal
 
 import (
+	"core/config"
+	auth_usecase "core/internal/auth/usecase"
+	"core/internal/basket"
+	basket_repository "core/internal/basket/repository"
+	basket_usecase "core/internal/basket/usecase"
+	"core/internal/feedback"
+	feedback_repository "core/internal/feedback/repository"
+	feedback_usecase "core/internal/feedback/usecase"
+	"core/internal/order"
+	order_repository "core/internal/order/repository"
+	order_usecase "core/internal/order/usecase"
+	"core/internal/product"
+	product_repository "core/internal/product/repository"
+	product_usecase "core/internal/product/usecase"
+	"core/internal/tg_bot"
+	tg_bot_usecase "core/internal/tg_bot/usecase"
+	"core/pkg/db"
+	"core/pkg/logger"
 	"fmt"
-	"market_auth/config"
-	"market_auth/internal/basket"
-	basket_repository "market_auth/internal/basket/repository"
-	basket_usecase "market_auth/internal/basket/usecase"
-	"market_auth/internal/feedback"
-	feedback_repository "market_auth/internal/feedback/repository"
-	feedback_usecase "market_auth/internal/feedback/usecase"
-	"market_auth/internal/order"
-	order_repository "market_auth/internal/order/repository"
-	order_usecase "market_auth/internal/order/usecase"
-	"market_auth/internal/product"
-	product_repository "market_auth/internal/product/repository"
-	product_usecase "market_auth/internal/product/usecase"
-	"market_auth/internal/tg_bot"
-	tg_bot_usecase "market_auth/internal/tg_bot/usecase"
-	"market_auth/pkg/db"
-	"market_auth/pkg/logger"
 )
 
 type App struct {
@@ -73,6 +74,7 @@ func (a *App) Init() error {
 	a.UC["order"] = order_usecase.New(a.Repo["order"].(order.Repository), a.Repo["product"].(product.Repository), a.UC["tg_bot"].(tg_bot.UC))
 	a.UC["product"] = product_usecase.New(a.Repo["product"].(product.Repository))
 	a.UC["feedback"] = feedback_usecase.New(a.Repo["feedback"].(feedback.Repository), a.UC["product"].(product.UC))
+	a.UC["auth"] = auth_usecase.New(a.cfg)
 
 	return nil
 }

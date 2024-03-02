@@ -9,7 +9,7 @@ var (
 	ErrJWTGenerate        = errors.New("error to generate token")
 	ErrInternal           = errors.New("internal error")
 	ErrHashingPassword    = errors.New("error to hash password")
-	ErrAuth               = errors.New("wrong token")
+	ErrAuth               = errors.New("unauthorized")
 	ErrJWTNotValid        = errors.New("not walid token")
 	ErrChangeTimezone     = errors.New("error to change timezone")
 	ErrToGetUser          = errors.New("user not found")

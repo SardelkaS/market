@@ -1,9 +1,9 @@
 package basket_http
 
 import (
+	auth "core/internal/auth"
+	"core/internal/basket"
 	"github.com/gofiber/fiber/v2"
-	auth "market_auth/internal/auth"
-	"market_auth/internal/basket"
 )
 
 func MapRoutes(r fiber.Router, mw auth.HttpHandler, h basket.HttpHandler) {

@@ -3,15 +3,14 @@ package auth_repository
 import (
 	"auth/internal/auth"
 	"auth/internal/auth/model"
-
-	"github.com/jmoiron/sqlx"
+	"auth/pkg/db"
 )
 
 type postgres struct {
-	db *sqlx.DB
+	db db.Connection
 }
 
-func NewPostgresRepo(db *sqlx.DB) auth.Repository {
+func NewPostgresRepo(db db.Connection) auth.Repository {
 	return &postgres{
 		db: db,
 	}

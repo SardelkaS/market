@@ -1,6 +1,6 @@
 package basket_model
 
-import product_model "market_auth/internal/product/model"
+import product_model "core/internal/product/model"
 
 type Basket struct {
 	Id        *int64 `db:"id"`

@@ -1,8 +1,8 @@
 package order
 
 import (
-	order_model "market_auth/internal/order/model"
-	product_model "market_auth/internal/product/model"
+	order_model "core/internal/order/model"
+	product_model "core/internal/product/model"
 )
 
 type Repository interface {

@@ -1,6 +1,6 @@
 package order
 
-import order_model "market_auth/internal/order/model"
+import order_model "core/internal/order/model"
 
 type UC interface {
 	CreateOrder(input order_model.CreateOrderBody) (*order_model.Order, error)

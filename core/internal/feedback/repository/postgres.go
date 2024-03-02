@@ -1,10 +1,10 @@
 package feedback_repository
 
 import (
+	"core/internal/feedback"
+	feedback_model "core/internal/feedback/model"
+	"core/pkg/db"
 	"github.com/lib/pq"
-	"market_auth/internal/feedback"
-	feedback_model "market_auth/internal/feedback/model"
-	"market_auth/pkg/db"
 )
 
 type postgres struct {

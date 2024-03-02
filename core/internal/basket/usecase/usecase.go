@@ -1,10 +1,10 @@
 package basket_usecase
 
 import (
+	"core/internal/basket"
+	basket_model "core/internal/basket/model"
+	"core/internal/product"
 	"fmt"
-	"market_auth/internal/basket"
-	basket_model "market_auth/internal/basket/model"
-	"market_auth/internal/product"
 )
 
 type uc struct {

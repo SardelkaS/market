@@ -1,9 +1,9 @@
 package product_usecase
 
 import (
+	"core/internal/product"
+	product_model "core/internal/product/model"
 	"fmt"
-	"market_auth/internal/product"
-	product_model "market_auth/internal/product/model"
 )
 
 type uc struct {

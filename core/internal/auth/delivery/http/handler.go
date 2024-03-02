@@ -1,9 +1,9 @@
-package http
+package auth_http
 
 import (
+	"core/internal/auth"
+	"core/internal/failure"
 	"github.com/gofiber/fiber/v2"
-	"market_auth/internal/auth"
-	"market_auth/internal/failure"
 )
 
 type httpHandler struct {

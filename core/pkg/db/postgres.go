@@ -3,10 +3,11 @@ package db
 import (
 	"context"
 	"errors"
-	"github.com/jackc/pgconn"
+	"github.com/georgysavva/scany/v2/pgxscan"
 	_ "github.com/jackc/pgx/stdlib" // pgx driver
-	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"log"
 )
@@ -35,7 +36,7 @@ func InitPsqlDB(connectionUrl string) (Connection, error) {
 
 	var pool *pgxpool.Pool
 	for i := 0; i < _connectionAttempts; i++ {
-		pool, err = pgxpool.ConnectConfig(context.Background(), cfg)
+		pool, err = pgxpool.NewWithConfig(context.Background(), cfg)
 		if err != nil {
 			log.Printf("ATTEMPT %d ERROR: %s", i+1, err.Error())
 			pool = nil
@@ -54,28 +55,11 @@ func InitPsqlDB(connectionUrl string) (Connection, error) {
 }
 
 func (c *connection) Select(dest interface{}, query string, args ...interface{}) error {
-	rows, err := c.db.Query(context.Background(), query, args[:]...)
-	if err != nil {
-		return err
-	}
-
-	err = rows.Scan(&dest)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return pgxscan.Select(context.Background(), c.db, dest, query, args[:]...)
 }
 
 func (c *connection) Get(dest interface{}, query string, args ...interface{}) error {
-	row := c.db.QueryRow(context.Background(), query, args[:]...)
-
-	err := row.Scan(&dest)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return pgxscan.Get(context.Background(), c.db, dest, query, args[:]...)
 }
 
 func (c *connection) Queryx(query string, args ...interface{}) (pgx.Rows, error) {

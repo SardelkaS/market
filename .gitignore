@@ -1,3 +1,5 @@
 .idea
 core/config/config.yml
+core/config/private.yaml
+core/config/public.yaml
 auth/config/config.yml

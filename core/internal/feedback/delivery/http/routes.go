@@ -1,9 +1,9 @@
 package feedback_http
 
 import (
+	auth "core/internal/auth"
+	"core/internal/feedback"
 	"github.com/gofiber/fiber/v2"
-	auth "market_auth/internal/auth"
-	"market_auth/internal/feedback"
 )
 
 func MapRoutes(r fiber.Router, mw auth.HttpHandler, h feedback.HttpHandler) {

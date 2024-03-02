@@ -1,12 +1,12 @@
 package basket_http
 
 import (
+	"core/internal/basket"
+	basket_model "core/internal/basket/model"
+	"core/internal/common"
+	"core/internal/failure"
+	"core/pkg/utils"
 	"github.com/gofiber/fiber/v2"
-	"market_auth/internal/basket"
-	basket_model "market_auth/internal/basket/model"
-	"market_auth/internal/common"
-	"market_auth/internal/failure"
-	"market_auth/pkg/utils"
 	"strconv"
 )
 

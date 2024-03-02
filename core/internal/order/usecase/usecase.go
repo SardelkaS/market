@@ -1,14 +1,14 @@
 package order_usecase
 
 import (
+	"core/internal/order"
+	order_model "core/internal/order/model"
+	"core/internal/product"
+	"core/internal/tg_bot"
+	tg_bot_model "core/internal/tg_bot/model"
+	"core/pkg/secure"
 	"fmt"
 	"github.com/google/uuid"
-	"market_auth/internal/order"
-	order_model "market_auth/internal/order/model"
-	"market_auth/internal/product"
-	"market_auth/internal/tg_bot"
-	tg_bot_model "market_auth/internal/tg_bot/model"
-	"market_auth/pkg/secure"
 )
 
 type uc struct {

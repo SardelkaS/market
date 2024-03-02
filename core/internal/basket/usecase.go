@@ -1,6 +1,6 @@
 package basket
 
-import basket_model "market_auth/internal/basket/model"
+import basket_model "core/internal/basket/model"
 
 type UC interface {
 	AddProduct(userId int64, productId string, count int64) error

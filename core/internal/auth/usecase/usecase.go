@@ -1,10 +1,10 @@
 package auth_usecase
 
 import (
-	"market_auth/config"
-	"market_auth/internal/auth"
-	"market_auth/internal/failure"
-	"market_auth/pkg/secure"
+	"core/config"
+	"core/internal/auth"
+	"core/internal/failure"
+	"core/pkg/secure"
 )
 
 type uc struct {
@@ -23,5 +23,7 @@ func (u *uc) VerifySignature(service, signature, body, timestamp, requestId stri
 		return false, failure.ErrAuth
 	}
 
-	return signature == secure.CalcSignature(secret.ApiPrivate, secret.ApiPublic+timestamp+requestId+body), nil
+	correctSignature := secure.CalcSignature(secret.ApiPrivate, secret.ApiPublic+timestamp+requestId+body)
+
+	return signature == correctSignature, nil
 }

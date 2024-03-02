@@ -1,6 +1,6 @@
 package basket
 
-import basket_model "market_auth/internal/basket/model"
+import basket_model "core/internal/basket/model"
 
 type Repository interface {
 	AddProduct(input basket_model.AddProductGatewayInput) (*int64, error)

@@ -1,6 +1,6 @@
 package feedback
 
-import feedback_model "market_auth/internal/feedback/model"
+import feedback_model "core/internal/feedback/model"
 
 type Repository interface {
 	InsertFeedback(input feedback_model.Feedback) (*int64, error)

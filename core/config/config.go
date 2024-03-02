@@ -7,6 +7,11 @@ import (
 	"os"
 )
 
+type Secrets struct {
+	ApiPublic  string `yaml:"api_public"`
+	ApiPrivate string `yaml:"api_private"`
+}
+
 type Config struct {
 	Service struct {
 		Host    string `yaml:"host"`
@@ -30,14 +35,8 @@ type Config struct {
 		Token  string `yaml:"token"`
 		ChatId int64  `yaml:"chat_id"`
 	} `yaml:"tg_bot"`
-	SecretsPath map[string]struct {
-		ApiPublic  string `yaml:"api_public"`
-		ApiPrivate string `yaml:"api_private"`
-	} `yaml:"secrets_path"`
-	Secrets map[string]struct {
-		ApiPublic  string `yaml:"-"`
-		ApiPrivate string `yaml:"-"`
-	} `yaml:"-"`
+	SecretsPath map[string]Secrets `yaml:"secrets_path"`
+	Secrets     map[string]Secrets `yaml:"-"`
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -63,6 +62,8 @@ func LoadConfig(path string) (*Config, error) {
 }
 
 func loadSecrets(cfg *Config) error {
+	cfg.Secrets = make(map[string]Secrets)
+
 	for k, v := range cfg.SecretsPath {
 		apiPublic, err := readFile(v.ApiPublic)
 		if err != nil {
@@ -73,16 +74,10 @@ func loadSecrets(cfg *Config) error {
 			return err
 		}
 
-		cfg.Secrets[k] = struct {
-			ApiPublic  string `yaml:"-"`
-			ApiPrivate string `yaml:"-"`
-		}(struct {
-			ApiPublic  string
-			ApiPrivate string
-		}{
+		cfg.Secrets[k] = Secrets{
 			ApiPublic:  apiPublic,
 			ApiPrivate: apiPrivate,
-		})
+		}
 	}
 
 	return nil

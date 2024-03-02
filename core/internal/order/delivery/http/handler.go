@@ -1,14 +1,14 @@
 package order_http
 
 import (
+	"core/internal/common"
+	"core/internal/failure"
+	"core/internal/order"
+	order_model "core/internal/order/model"
+	"core/internal/product"
+	"core/pkg/utils"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"market_auth/internal/common"
-	"market_auth/internal/failure"
-	"market_auth/internal/order"
-	order_model "market_auth/internal/order/model"
-	"market_auth/internal/product"
-	"market_auth/pkg/utils"
 	"strconv"
 )
 

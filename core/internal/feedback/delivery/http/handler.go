@@ -1,12 +1,12 @@
 package feedback_http
 
 import (
+	"core/internal/common"
+	"core/internal/failure"
+	"core/internal/feedback"
+	feedback_model "core/internal/feedback/model"
+	"core/pkg/utils"
 	"github.com/gofiber/fiber/v2"
-	"market_auth/internal/common"
-	"market_auth/internal/failure"
-	"market_auth/internal/feedback"
-	feedback_model "market_auth/internal/feedback/model"
-	"market_auth/pkg/utils"
 	"strconv"
 )
 

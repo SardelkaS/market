@@ -1,9 +1,9 @@
 package order_http
 
 import (
+	auth "core/internal/auth"
+	"core/internal/order"
 	"github.com/gofiber/fiber/v2"
-	auth "market_auth/internal/auth"
-	"market_auth/internal/order"
 )
 
 func MapRoutes(r fiber.Router, mw auth.HttpHandler, h order.HttpHandler) {

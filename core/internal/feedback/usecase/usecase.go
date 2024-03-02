@@ -1,13 +1,13 @@
 package feedback_usecase
 
 import (
+	"core/internal/failure"
+	"core/internal/feedback"
+	feedback_model "core/internal/feedback/model"
+	"core/internal/product"
+	"core/pkg/secure"
 	"fmt"
 	"github.com/google/uuid"
-	"market_auth/internal/failure"
-	"market_auth/internal/feedback"
-	feedback_model "market_auth/internal/feedback/model"
-	"market_auth/internal/product"
-	"market_auth/pkg/secure"
 )
 
 type uc struct {

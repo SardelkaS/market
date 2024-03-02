@@ -1,11 +1,11 @@
 package tg_bot_usecase
 
 import (
+	"core/config"
+	"core/internal/tg_bot"
+	tg_bot_model "core/internal/tg_bot/model"
 	"fmt"
 	tele "gopkg.in/telebot.v3"
-	"market_auth/config"
-	"market_auth/internal/tg_bot"
-	tg_bot_model "market_auth/internal/tg_bot/model"
 	"strings"
 	"time"
 )

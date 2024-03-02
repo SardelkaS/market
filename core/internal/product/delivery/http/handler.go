@@ -1,13 +1,13 @@
 package product_http
 
 import (
+	"core/internal/common"
+	"core/internal/failure"
+	"core/internal/product"
+	product_model "core/internal/product/model"
+	"core/pkg/utils"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"market_auth/internal/common"
-	"market_auth/internal/failure"
-	"market_auth/internal/product"
-	product_model "market_auth/internal/product/model"
-	"market_auth/pkg/utils"
 	"strconv"
 )
 

@@ -1,9 +1,9 @@
 package product_http
 
 import (
+	"core/internal/auth"
+	"core/internal/product"
 	"github.com/gofiber/fiber/v2"
-	"market_auth/internal/auth"
-	"market_auth/internal/product"
 )
 
 func MapRoutes(r fiber.Router, mw auth.HttpHandler, h product.HttpHandler) {

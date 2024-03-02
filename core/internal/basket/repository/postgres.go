@@ -1,9 +1,9 @@
 package basket_repository
 
 import (
-	"market_auth/internal/basket"
-	basket_model "market_auth/internal/basket/model"
-	"market_auth/pkg/db"
+	"core/internal/basket"
+	basket_model "core/internal/basket/model"
+	"core/pkg/db"
 )
 
 type postgres struct {

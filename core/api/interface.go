@@ -1,6 +1,6 @@
 package api
 
-import "market_auth/internal"
+import "core/internal"
 
 type Server interface {
 	Init() error

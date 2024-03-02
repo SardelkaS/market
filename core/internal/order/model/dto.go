@@ -1,6 +1,6 @@
 package order_model
 
-import product_model "market_auth/internal/product/model"
+import product_model "core/internal/product/model"
 
 type CreateOrderBody struct {
 	UserId      *int64         `json:"-"`
