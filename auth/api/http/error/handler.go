@@ -2,6 +2,8 @@ package error
 
 import (
 	"auth/internal/common"
+	"auth/internal/failure"
+	"errors"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,9 +16,17 @@ func NewHandler() Handler {
 }
 
 func (h Handler) Control(ctx *fiber.Ctx, err error) error {
+	var lErr failure.LogicError
+	ok := errors.As(err, &lErr)
+	if ok {
+		return ctx.Status(lErr.Code()).JSON(common.Response{
+			Status:      common.FailedStatus,
+			Description: lErr.Description(),
+		})
+	}
+
 	return ctx.Status(fiber.StatusInternalServerError).JSON(common.Response{
-		Status:      common.FailedStatus,
-		Description: err.Error(),
+		Status: common.FailedStatus,
 	})
 }
 

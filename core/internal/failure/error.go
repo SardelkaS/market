@@ -1,18 +1,32 @@
 package failure
 
-import "errors"
+type LogicError struct {
+	code        int
+	err         error
+	description string
+}
+
+func (l LogicError) Code() int {
+	return l.code
+}
+
+func (l LogicError) Description() string {
+	return l.description
+}
+
+func (l LogicError) Error() string {
+	return l.err.Error()
+}
+
+func (l LogicError) Wrap(err error) LogicError {
+	l.err = err
+	return l
+}
 
 var (
-	ErrInput              = errors.New("bad request")
-	ErrNotFound           = errors.New("not found")
-	ErrPasswordNotCorrect = errors.New("incorrect password")
-	ErrJWTGenerate        = errors.New("error to generate token")
-	ErrInternal           = errors.New("internal error")
-	ErrHashingPassword    = errors.New("error to hash password")
-	ErrAuth               = errors.New("unauthorized")
-	ErrJWTNotValid        = errors.New("not walid token")
-	ErrChangeTimezone     = errors.New("error to change timezone")
-	ErrToGetUser          = errors.New("user not found")
-	ErrToUpdateUser       = errors.New("error to update user")
-	ErrServiceNotFound    = errors.New("service.yaml not found")
+	ErrInput           = LogicError{code: 500, description: "bad request"}
+	ErrNotFound        = LogicError{code: 404, description: "not found"}
+	ErrAuth            = LogicError{code: 401, description: "unauthorized"}
+	ErrToGetUser       = LogicError{code: 500, description: "user not found"}
+	ErrServiceNotFound = LogicError{code: 404, description: "service not found"}
 )
