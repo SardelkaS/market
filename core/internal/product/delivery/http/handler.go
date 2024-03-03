@@ -218,7 +218,7 @@ func (h httpHandler) LikeProduct() fiber.Handler {
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		err = h.uc.LikeProduct(productId, userId)
@@ -241,7 +241,7 @@ func (h httpHandler) UnlikeProduct() fiber.Handler {
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		err = h.uc.UnlikeProduct(productId, userId)
@@ -259,7 +259,7 @@ func (h httpHandler) FetchRecentlyViewedProducts() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		limit, err := strconv.ParseInt(ctx.Query("limit", ""), 10, 64)
@@ -283,7 +283,7 @@ func (h httpHandler) FetchBoughtProducts() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		var paramLimit *int64

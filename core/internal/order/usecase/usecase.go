@@ -1,6 +1,7 @@
 package order_usecase
 
 import (
+	"core/internal/failure"
 	"core/internal/order"
 	order_model "core/internal/order/model"
 	"core/internal/product"
@@ -37,13 +38,13 @@ func (u *uc) CreateOrder(input order_model.CreateOrderBody) (*order_model.Order,
 	})
 	if err != nil {
 		fmt.Printf("Error to create order: %s\n", err.Error())
-		return nil, fmt.Errorf("error to create order")
+		return nil, failure.ErrCreateOrder.Wrap(err)
 	}
 
 	orderData, err := u.repo.GetOrderById(*orderId)
 	if err != nil {
 		fmt.Printf("Error to get order %d: %s\n", *orderId, err.Error())
-		return nil, fmt.Errorf("error to create order")
+		return nil, failure.ErrCreateOrder.Wrap(err)
 	}
 
 	var productsNames []string
@@ -73,7 +74,7 @@ func (u *uc) AttachProductToOrder(input order_model.AttachProductBody) ([]string
 	orderData, err := u.repo.GetOrderByInternalId(*input.OrderId)
 	if err != nil {
 		fmt.Printf("Error to get order %s: %s\n", *input.OrderId, err.Error())
-		return nil, fmt.Errorf("order not found")
+		return nil, failure.ErrGetOrder.Wrap(err)
 	}
 
 	var productsNames []string
@@ -84,7 +85,7 @@ func (u *uc) AttachProductToOrder(input order_model.AttachProductBody) ([]string
 		productData, err := u.productRepo.GetProductByInternalId(*inputProduct.ProductId)
 		if err != nil {
 			fmt.Printf("Error to get product %s: %s\n", *inputProduct.ProductId, err.Error())
-			return nil, fmt.Errorf("product not found")
+			return nil, failure.ErrGetProduct.Wrap(err)
 		}
 		productsNames = append(productsNames, *productData.Name)
 
@@ -96,7 +97,7 @@ func (u *uc) AttachProductToOrder(input order_model.AttachProductBody) ([]string
 		_, err = u.repo.AttachProductToOrder(*orderData.Id, *productData.Id, *inputProduct.Count)
 		if err != nil {
 			fmt.Printf("Error to attach produst %s to order %s: %s", *inputProduct.ProductId, *input.OrderId, err.Error())
-			return nil, fmt.Errorf("error to attach product")
+			return nil, failure.ErrAttachProduct.Wrap(err)
 		}
 	}
 	return productsNames, nil
@@ -109,7 +110,7 @@ func (u *uc) RemoveProductFromOrder(input order_model.RemoveProductFromOrderBody
 	orderData, err := u.repo.GetOrderByInternalId(*input.OrderId)
 	if err != nil {
 		fmt.Printf("Error to get order %s: %s\n", *input.OrderId, err.Error())
-		return fmt.Errorf("order not found")
+		return failure.ErrGetOrder.Wrap(err)
 	}
 
 	if *orderData.UserId != *input.UserId {
@@ -119,25 +120,25 @@ func (u *uc) RemoveProductFromOrder(input order_model.RemoveProductFromOrderBody
 	productData, err := u.productRepo.GetProductByInternalId(*input.ProductId)
 	if err != nil {
 		fmt.Printf("Error to get product %s: %s\n", *input.ProductId, err.Error())
-		return fmt.Errorf("product not found")
+		return failure.ErrGetProduct.Wrap(err)
 	}
 
 	err = u.repo.RemoveProductFromOrder(*orderData.Id, *productData.Id)
 	if err != nil {
 		fmt.Printf("Error to remove product %s from order %s: %s\n", *input.ProductId, *input.OrderId, err.Error())
-		return fmt.Errorf("error to remove product from order")
+		return failure.ErrDetachProduct.Wrap(err)
 	}
 	return nil
 }
 
 func (u *uc) UpdateProductCount(input order_model.UpdateProductsCountBody) error {
 	if input.OrderId == nil || input.ProductId == nil || input.UserId == nil || input.Count == nil {
-		return fmt.Errorf("wrong input")
+		return failure.ErrInput
 	}
 	orderData, err := u.repo.GetOrderByInternalId(*input.OrderId)
 	if err != nil {
 		fmt.Printf("Error to get order %s: %s\n", *input.OrderId, err.Error())
-		return fmt.Errorf("order not found")
+		return failure.ErrGetOrder.Wrap(err)
 	}
 
 	if *orderData.UserId != *input.UserId {
@@ -147,14 +148,14 @@ func (u *uc) UpdateProductCount(input order_model.UpdateProductsCountBody) error
 	productData, err := u.productRepo.GetProductByInternalId(*input.ProductId)
 	if err != nil {
 		fmt.Printf("Error to get product %s: %s\n", *input.ProductId, err.Error())
-		return fmt.Errorf("product not found")
+		return failure.ErrGetProduct.Wrap(err)
 	}
 
 	if *input.Count <= 0 {
 		err = u.repo.RemoveProductFromOrder(*orderData.Id, *productData.Id)
 		if err != nil {
 			fmt.Printf("Error to remove product %s from order %s: %s\n", *input.ProductId, *input.OrderId, err.Error())
-			return fmt.Errorf("error to remove product from order")
+			return failure.ErrDetachProduct.Wrap(err)
 		}
 		return nil
 	}
@@ -162,7 +163,7 @@ func (u *uc) UpdateProductCount(input order_model.UpdateProductsCountBody) error
 	err = u.repo.UpdateProductsCount(*orderData.Id, *productData.Id, *input.Count)
 	if err != nil {
 		fmt.Printf("Error to update product %s in order %s count: %s\n", *input.ProductId, *input.OrderId, err.Error())
-		return fmt.Errorf("error to update product count")
+		return failure.ErrUpdateOrderProductsCount.Wrap(err)
 	}
 
 	return nil
@@ -172,7 +173,7 @@ func (u *uc) PendingOrder(orderId string, userId int64) error {
 	orderData, err := u.repo.GetOrderByInternalId(orderId)
 	if err != nil {
 		fmt.Printf("Error to get order %s: %s\n", orderId, err.Error())
-		return fmt.Errorf("order not found")
+		return failure.ErrGetOrder.Wrap(err)
 	}
 
 	if *orderData.UserId != userId {
@@ -182,7 +183,7 @@ func (u *uc) PendingOrder(orderId string, userId int64) error {
 	err = u.repo.UpdateOrderStatus(orderId, order_model.PendingStatus)
 	if err != nil {
 		fmt.Printf("Error to update order %s status to pending: %s", orderId, err.Error())
-		return fmt.Errorf("error to update order status")
+		return failure.ErrUpdateOrderStatus.Wrap(err)
 	}
 	return nil
 }
@@ -197,12 +198,12 @@ func (u *uc) FetchOrders(input order_model.FetchOrdersParams) (*order_model.Fetc
 	orders, err := u.repo.FetchOrders(params)
 	if err != nil {
 		fmt.Printf("Error to fetch orders: %s", err.Error())
-		return nil, fmt.Errorf("error to fetch orders")
+		return nil, failure.ErrGetOrder.Wrap(err)
 	}
 	count, err := u.repo.GetOrdersCount(params)
 	if err != nil {
 		fmt.Printf("Error to fetch orders count: %s", err.Error())
-		return nil, fmt.Errorf("error to fetch orders")
+		return nil, failure.ErrGetOrder.Wrap(err)
 	}
 
 	return &order_model.FetchOrdersResult{
@@ -215,11 +216,11 @@ func (u *uc) GetOrder(orderId string, userId int64) (*order_model.Order, error) 
 	orderData, err := u.repo.GetOrderByInternalId(orderId)
 	if err != nil {
 		fmt.Printf("Error to get order %s: %s\n", orderId, err.Error())
-		return nil, fmt.Errorf("order not found")
+		return nil, failure.ErrGetOrder.Wrap(err)
 	}
 
 	if *orderData.UserId != userId {
-		return nil, fmt.Errorf("order belongs to anither user")
+		return nil, failure.ErrForbidden
 	}
 
 	return orderData, nil
@@ -229,11 +230,11 @@ func (u *uc) FetchOrderProducts(input order_model.FetchOrderProductsParams) (*or
 	orderData, err := u.repo.GetOrderByInternalId(*input.OrderId)
 	if err != nil {
 		fmt.Printf("Error to get order %s: %s\n", *input.OrderId, err.Error())
-		return nil, fmt.Errorf("order not found")
+		return nil, failure.ErrGetOrder.Wrap(err)
 	}
 
 	if *orderData.UserId != *input.UserId {
-		return nil, fmt.Errorf("order belongs to anither user")
+		return nil, failure.ErrForbidden
 	}
 
 	params := order_model.FetchOrderProductsGatewayInput{
@@ -244,12 +245,12 @@ func (u *uc) FetchOrderProducts(input order_model.FetchOrderProductsParams) (*or
 	products, err := u.repo.FetchOrderProducts(params)
 	if err != nil {
 		fmt.Printf("Error to fetch order %s products: %s\n", *input.OrderId, err.Error())
-		return nil, fmt.Errorf("error to fetch order products")
+		return nil, failure.ErrGetOrderProducts.Wrap(err)
 	}
 	count, err := u.repo.GetOrderProductsCount(params)
 	if err != nil {
 		fmt.Printf("Error to fetch order %s products count: %s\n", *input.OrderId, err.Error())
-		return nil, fmt.Errorf("error to fetch order products")
+		return nil, failure.ErrGetOrderProducts.Wrap(err)
 	}
 
 	return &order_model.FetchOrderProductsResult{
@@ -267,7 +268,7 @@ func (u *uc) GetOrdersInfo(orders []order_model.Order, productsLimit *int64) ([]
 	ordersInfo, err := u.repo.GetOrdersInfo(ids)
 	if err != nil {
 		fmt.Printf("Error to get orders (%v) info: %s", ids, err.Error())
-		return nil, fmt.Errorf("error to get orders info")
+		return nil, failure.ErrGetOrder.Wrap(err)
 	}
 
 	if productsLimit != nil && len(ordersInfo) > 0 {
@@ -278,7 +279,7 @@ func (u *uc) GetOrdersInfo(orders []order_model.Order, productsLimit *int64) ([]
 			})
 			if err != nil {
 				fmt.Printf("Error to fetch order %d products: %s\n", *ordersInfo[i].Id, err.Error())
-				return nil, fmt.Errorf("error to fetch order products")
+				return nil, failure.ErrGetOrderProducts.Wrap(err)
 			}
 
 			var pIds []int64
@@ -289,7 +290,7 @@ func (u *uc) GetOrdersInfo(orders []order_model.Order, productsLimit *int64) ([]
 			productsInfo, err := u.productRepo.GetProductsInfo(pIds, ordersInfo[0].UserId)
 			if err != nil {
 				fmt.Printf("Error to fetch order %d products: %s\n", *ordersInfo[i].Id, err.Error())
-				return nil, fmt.Errorf("error to fetch order products")
+				return nil, failure.ErrGetOrderProducts.Wrap(err)
 			}
 
 			ordersInfo[i].Products = productsInfo

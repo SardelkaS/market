@@ -3,6 +3,7 @@ package basket_usecase
 import (
 	"core/internal/basket"
 	basket_model "core/internal/basket/model"
+	"core/internal/failure"
 	"core/internal/product"
 	"fmt"
 )
@@ -23,19 +24,19 @@ func (u *uc) AddProduct(userId int64, productId string, count int64) error {
 	productData, err := u.productRepo.GetProductByInternalId(productId)
 	if err != nil {
 		fmt.Printf("Error to get product %s: %s\n", productId, err.Error())
-		return fmt.Errorf("product not found")
+		return failure.ErrGetProduct.Wrap(err)
 	}
 
 	exists, err := u.repo.CheckRecordExists(userId, *productData.Id)
 	if err != nil {
 		fmt.Printf("Error to check record %d for user %d: %s", *productData.Id, userId, err.Error())
-		return fmt.Errorf("error to add product to basket")
+		return failure.ErrAddProduct.Wrap(err)
 	}
 	if exists != nil && *exists {
 		err = u.repo.IncrementCount(userId, *productData.Id)
 		if err != nil {
 			fmt.Printf("Error to increment product %s count: %s\n", productId, err.Error())
-			return fmt.Errorf("error to add product to basket")
+			return failure.ErrAddProduct.Wrap(err)
 		}
 		return nil
 	}
@@ -47,7 +48,7 @@ func (u *uc) AddProduct(userId int64, productId string, count int64) error {
 	})
 	if err != nil {
 		fmt.Printf("Error to add product %s to basket: %s\n", productId, err.Error())
-		return fmt.Errorf("error to add product to basket")
+		return failure.ErrAddProduct.Wrap(err)
 	}
 	return nil
 }
@@ -56,13 +57,13 @@ func (u *uc) IncrementCount(userId int64, productId string) error {
 	productData, err := u.productRepo.GetProductByInternalId(productId)
 	if err != nil {
 		fmt.Printf("Error to get product %s: %s\n", productId, err.Error())
-		return fmt.Errorf("product not found")
+		return failure.ErrGetProduct.Wrap(err)
 	}
 
 	err = u.repo.IncrementCount(userId, *productData.Id)
 	if err != nil {
 		fmt.Printf("Error to increment product %s count: %s\n", productId, err.Error())
-		return fmt.Errorf("error to increment product count")
+		return failure.ErrIncrProduct.Wrap(err)
 	}
 	return nil
 }
@@ -71,13 +72,13 @@ func (u *uc) DecrementCount(userId int64, productId string) error {
 	productData, err := u.productRepo.GetProductByInternalId(productId)
 	if err != nil {
 		fmt.Printf("Error to get product %s: %s\n", productId, err.Error())
-		return fmt.Errorf("product not found")
+		return failure.ErrGetProduct.Wrap(err)
 	}
 
 	err = u.repo.DecrementCount(userId, *productData.Id)
 	if err != nil {
 		fmt.Printf("Error to decrement product %s count: %s\n", productId, err.Error())
-		return fmt.Errorf("error to decrement product count")
+		return failure.ErrDecrProduct.Wrap(err)
 	}
 	return nil
 }
@@ -86,7 +87,7 @@ func (u *uc) ClearBasket(userId int64) error {
 	err := u.repo.ClearBasket(userId)
 	if err != nil {
 		fmt.Printf("Error to clear user %d basket: %s\n", userId, err.Error())
-		return fmt.Errorf("error to clear basket")
+		return failure.ErrClearBasket.Wrap(err)
 	}
 	return nil
 }
@@ -95,7 +96,7 @@ func (u *uc) GetBasket(userId int64) ([]basket_model.Basket, error) {
 	result, err := u.repo.GetBasket(userId)
 	if err != nil {
 		fmt.Printf("Error to get user %d basket: %s\n", userId, err.Error())
-		return nil, fmt.Errorf("error to get basket")
+		return nil, failure.ErrGetBasket.Wrap(err)
 	}
 	return result, nil
 }
@@ -112,7 +113,7 @@ func (u *uc) GetBasketInfo(rawData []basket_model.Basket, userId *int64) (*baske
 		productData, err := u.productRepo.GetProductsInfo([]int64{*data.ProductId}, userId)
 		if err != nil {
 			fmt.Printf("Error to get product %d data: %s\n", *data.ProductId, err.Error())
-			return nil, fmt.Errorf("error to get basket")
+			return nil, failure.ErrGetBasket.Wrap(err)
 		}
 		products = append(products, basket_model.BasketProductInfo{
 			Count:   data.Count,

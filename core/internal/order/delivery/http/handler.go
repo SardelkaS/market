@@ -36,7 +36,7 @@ func (h httpHandler) CreateOrder() fiber.Handler {
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		body.UserId = &userId
@@ -73,7 +73,7 @@ func (h httpHandler) AttachProductToOrder() fiber.Handler {
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		orderId := ctx.Params("internal_id")
@@ -104,7 +104,7 @@ func (h httpHandler) RemoveProductFromOrder() fiber.Handler {
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		orderId := ctx.Params("internal_id")
@@ -135,7 +135,7 @@ func (h httpHandler) UpdateProductCount() fiber.Handler {
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		orderId := ctx.Params("internal_id")
@@ -160,7 +160,7 @@ func (h httpHandler) PendingOrder() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		orderId := ctx.Params("internal_id")
@@ -184,7 +184,7 @@ func (h httpHandler) FetchOrders() fiber.Handler {
 		var params order_model.FetchOrdersParams
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 		params.UserId = &userId
 
@@ -232,7 +232,7 @@ func (h httpHandler) GetOrder() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		orderId := ctx.Params("internal_id")
@@ -268,7 +268,7 @@ func (h httpHandler) FetchOrderProducts() fiber.Handler {
 		var params order_model.FetchOrderProductsParams
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 		params.UserId = &userId
 

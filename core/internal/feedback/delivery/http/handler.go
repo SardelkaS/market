@@ -32,7 +32,7 @@ func (h httpHandler) CreateFeedback() fiber.Handler {
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		body.UserId = &userId
@@ -51,7 +51,7 @@ func (h httpHandler) RemoveFeedback() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		feedbackId := ctx.Params("internal_id", "")
@@ -77,7 +77,7 @@ func (h httpHandler) GetFeedback() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		feedbackId := ctx.Params("internal_id", "")
@@ -110,7 +110,7 @@ func (h httpHandler) FetchFeedback() fiber.Handler {
 		var params feedback_model.FetchFeedbackParams
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 		params.UserId = &userId
 
@@ -158,7 +158,7 @@ func (h httpHandler) LikeFeedback() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		feedbackId := ctx.Params("internal_id", "")
@@ -181,7 +181,7 @@ func (h httpHandler) UnlikeFeedback() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		feedbackId := ctx.Params("internal_id", "")

@@ -43,7 +43,7 @@ func (u *uc) CreateFeedback(input feedback_model.CreateFeedbackBody) error {
 	})
 	if err != nil {
 		fmt.Printf("Error to create feedback for product %s: %s\n", *productData.InternalId, err.Error())
-		return fmt.Errorf("error to save feedback")
+		return failure.ErrSaveFeedback.Wrap(err)
 	}
 
 	return nil
@@ -57,21 +57,21 @@ func (u *uc) RemoveFeedback(input feedback_model.RemoveFeedbackBody) error {
 	feedbackData, err := u.repo.GetFeedbackByInternalId(input.FeedbackId)
 	if err != nil {
 		fmt.Printf("Error to get feedback %s: %s\n", *input.FeedbackId, err.Error())
-		return fmt.Errorf("error to get feedback")
+		return failure.ErrGetFeedback.Wrap(err)
 	}
 	if feedbackData == nil {
 		fmt.Printf("Error to get feedback %s: not found\n", *input.FeedbackId)
-		return fmt.Errorf("error to get feedback")
+		return failure.ErrFeedbackNotFound
 	}
 
 	if *feedbackData.UserId != *input.UserId {
-		return fmt.Errorf("feedback belongs to another user")
+		return failure.ErrForbidden
 	}
 
 	err = u.repo.RemoveFeedback(*feedbackData.Id)
 	if err != nil {
 		fmt.Printf("Error to remove feedback %s: %s", *input.FeedbackId, err.Error())
-		return fmt.Errorf("error to remove feedback")
+		return failure.ErrRemoveFeedback.Wrap(err)
 	}
 
 	return nil
@@ -81,11 +81,11 @@ func (u *uc) GetFeedbackByInternalId(internalId string) (*feedback_model.Feedbac
 	feedbackData, err := u.repo.GetFeedbackByInternalId(&internalId)
 	if err != nil {
 		fmt.Printf("Error to get feedback %s: %s\n", internalId, err.Error())
-		return nil, fmt.Errorf("error to get feedback")
+		return nil, failure.ErrGetFeedback.Wrap(err)
 	}
 	if feedbackData == nil {
 		fmt.Printf("Error to get feedback %s: not found\n", internalId)
-		return nil, fmt.Errorf("error to get feedback")
+		return nil, failure.ErrFeedbackNotFound
 	}
 
 	return feedbackData, nil
@@ -114,13 +114,13 @@ func (u *uc) FetchFeedback(input feedback_model.FetchFeedbackParams) (*feedback_
 	feedbacks, err := u.repo.FetchFeedback(productId, userId, input.Limit, input.Offset)
 	if err != nil {
 		fmt.Printf("Error to fetch feedback: %s\n", err.Error())
-		return nil, fmt.Errorf("error to fetch feedback")
+		return nil, failure.ErrGetFeedback.Wrap(err)
 	}
 
 	count, err := u.repo.GetFeedbackCount(productId, userId)
 	if err != nil {
 		fmt.Printf("Error to get feedback count: %s\n", err.Error())
-		return nil, fmt.Errorf("error to get feedback count")
+		return nil, failure.ErrGetFeedback.Wrap(err)
 	}
 
 	return &feedback_model.FetchFeedbackLogicOutput{
@@ -136,23 +136,23 @@ func (u *uc) LikeFeedback(feedbackId string, userId int64) error {
 	}
 
 	if *feedbackData.UserId == userId {
-		return fmt.Errorf("it's your feedback")
+		return failure.ErrYourFeedback
 	}
 
 	isLiked, err := u.repo.CheckIsFeedbackLiked(*feedbackData.Id, userId)
 	if err != nil {
 		fmt.Printf("Error to check is feedback %s liked by %d: %s", feedbackId, userId, err.Error())
-		return fmt.Errorf("error to like feedback")
+		return failure.ErrLikeFeedback.Wrap(err)
 	}
 
 	if isLiked == nil || *isLiked {
-		return fmt.Errorf("feedback already liked")
+		return failure.ErrFeedbackLiked
 	}
 
 	_, err = u.repo.LikeFeedback(feedbackData.Id, &userId)
 	if err != nil {
 		fmt.Printf("Error to like feedback %s: %s\n", feedbackId, err.Error())
-		return fmt.Errorf("error to like feedback")
+		return failure.ErrLikeFeedback.Wrap(err)
 	}
 
 	return nil
@@ -165,13 +165,13 @@ func (u *uc) UnlikeFeedback(feedbackId string, userId int64) error {
 	}
 
 	if *feedbackData.UserId == userId {
-		return fmt.Errorf("it's your feedback")
+		return failure.ErrYourFeedback
 	}
 
 	err = u.repo.UnlikeFeedback(feedbackData.Id, &userId)
 	if err != nil {
 		fmt.Printf("Error to unlike feedback %s: %s\n", feedbackId, err.Error())
-		return fmt.Errorf("error to unlike feedback")
+		return failure.ErrUnlikeFeedback.Wrap(err)
 	}
 
 	return nil
@@ -186,7 +186,7 @@ func (u *uc) GetFeedbackInfo(feedbacks []feedback_model.Feedback, userId int64) 
 	result, err := u.repo.GetFeedbackInfo(ids, &userId)
 	if err != nil {
 		fmt.Printf("Error to get feedbacks info (%v): %s\n", ids, err.Error())
-		return nil, fmt.Errorf("error to get feedbacks info")
+		return nil, failure.ErrGetFeedback.Wrap(err)
 	}
 
 	return result, nil

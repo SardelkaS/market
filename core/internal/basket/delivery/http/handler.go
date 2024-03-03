@@ -32,7 +32,7 @@ func (h httpHandler) AddProduct() fiber.Handler {
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		err = h.uc.AddProduct(userId, body.ProductId, body.Count)
@@ -56,7 +56,7 @@ func (h httpHandler) IncrementCount() fiber.Handler {
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		err = h.uc.IncrementCount(userId, body.ProductId)
@@ -80,7 +80,7 @@ func (h httpHandler) DecrementCount() fiber.Handler {
 
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		err = h.uc.DecrementCount(userId, body.ProductId)
@@ -98,7 +98,7 @@ func (h httpHandler) Clear() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		err = h.uc.ClearBasket(userId)
@@ -116,7 +116,7 @@ func (h httpHandler) GetBasket() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		userId, err := strconv.ParseInt(ctx.Get("user_id", ""), 10, 64)
 		if err != nil {
-			return failure.ErrToGetUser
+			return failure.ErrGetUser
 		}
 
 		rawResult, err := h.uc.GetBasket(userId)
