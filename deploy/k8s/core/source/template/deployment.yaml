@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: core
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: core
+    spec:
+      containers:
+        - image: registry/core-image
+          imagePullPolicy: Always
+          name: core-app
+          ports:
+            - containerPort: 7732
+              name: core
+              protocol: TCP
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2000Mi
+            requests:
+              cpu: "0.5"
+              memory: 500Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /config
+              name: config-volume
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - configMap:
+            defaultMode: 511
+            name: core-config
+          name: config-volume

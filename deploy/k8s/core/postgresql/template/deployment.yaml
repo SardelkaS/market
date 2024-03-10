@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: core-postgres
+  template:
+    metadata:
+      labels:
+        app: core-postgres
+    spec:
+      containers:
+        - name: core-postgres
+          image: 'postgres:latest'
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: core-postgres-secret
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdata
+      volumes:
+        - name: postgresdata
+          persistentVolumeClaim:
+            claimName: core-postgres-volume-claim

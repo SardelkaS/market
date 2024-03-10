@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: core-postgres-secret
+  labels:
+    app: core-postgres
+data:
+  POSTGRES_DB: "core"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "TestPwd"

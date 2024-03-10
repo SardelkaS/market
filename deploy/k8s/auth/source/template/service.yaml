@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth
+  namespace: default
+spec:
+  ports:
+    - port: 7733
+      protocol: TCP
+      targetPort: 7733
+  selector:
+    name: auth
+  sessionAffinity: None
+  type: LoadBalancer
