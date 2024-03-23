@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.auth.name }}-postgres-volume
+  labels:
+    type: local
+    app: {{ .Values.auth.name }}
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.auth.postgres.storage }}
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/postgresql
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.auth.name }}-redis-volume
+  labels:
+    type: local
+    app: {{ .Values.auth.name }}-redis
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.auth.redis.storage }}
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/redis
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.core.name }}-postgres-volume
+  labels:
+    type: local
+    app: {{ .Values.core.name }}-postgres
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.core.postgres.storage }}
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /data/postgresql

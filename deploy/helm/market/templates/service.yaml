@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.auth.name }}-postgres
+  labels:
+    app: {{ .Values.auth.name }}-postgres
+spec:
+  type: NodePort
+  ports:
+    - port: {{ .Values.auth.postgres.port }}
+      targetPort: 5432
+      name: {{ .Values.auth.name }}-postgres
+  selector:
+    app: {{ .Values.auth.name }}-postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.auth.name }}-redis
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.auth.redis.port }}
+      targetPort: 6379
+      name: {{ .Values.auth.name }}-redis
+  selector:
+    app: {{ .Values.auth.name }}-redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.auth.name }}
+  namespace: default
+spec:
+  ports:
+    - port: {{ .Values.auth.service.port }}
+      protocol: TCP
+      targetPort: {{ .Values.auth.service.port }}
+  selector:
+    name: {{ .Values.auth.name }}
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.core.name }}-postgres
+  labels:
+    app: {{ .Values.core.name }}-postgres
+spec:
+  type: NodePort
+  ports:
+    - port: {{ .Values.core.postgres.port }}
+      targetPort: 5432
+      name: {{ .Values.core.name }}-postgres
+  selector:
+    app: {{ .Values.core.name }}-postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.core.name }}
+  namespace: default
+spec:
+  ports:
+    - port: {{ .Values.core.service.port }}
+      protocol: TCP
+      targetPort: {{ .Values.core.service.port }}
+  selector:
+    name: {{ .Values.core.name }}
+  sessionAffinity: None
+  type: LoadBalancer

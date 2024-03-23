@@ -1,0 +1,85 @@
+image:
+  redis: redis:6.2.3-alpine
+  postgres: postgres:latest
+  auth: registry/auth-image
+  core: registry/core-image
+
+auth:
+  name: auth
+  postgres:
+    dbName: auth
+    user: postgres
+    password: TestPwd
+    name: auth-postgres
+    port: 5432
+    sslMode: disable
+    maxConns: 20
+    minConns: 5
+    maxConnLifeTime: 1m
+    maxConnIdleTime: 5m
+    healthCheckDuration: 30s
+    storage: 10Gi
+    resources:
+      limits:
+        cpu: "2"
+        memory: 1000Mi
+      requests:
+        cpu: "1"
+        memory: 500Mi
+  redis:
+    port: 6379
+    password: TestPwd
+    name: auth-redis
+    storage: 1Gi
+  service:
+    port: 7732
+    version: 1.0.0
+    name: auth
+    auth:
+      refreshLifeTime: 30
+      accessLifeTime: 10
+      secret: secret
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1000Mi
+      requests:
+        cpu: "0.5"
+        memory: 500Mi
+
+core:
+  name: core
+  postgres:
+    dbName: core
+    user: postgres
+    password: TestPwd
+    name: core-postgres
+    port: 5432
+    sslMode: disable
+    maxConns: 20
+    minConns: 5
+    maxConnLifeTime: 1m
+    maxConnIdleTime: 5m
+    healthCheckDuration: 30s
+    storage: 10Gi
+    resources:
+      limits:
+        cpu: "4"
+        memory: 2000Mi
+      requests:
+        cpu: "1"
+        memory: 500Mi
+  service:
+    port: 7733
+    version: 1.0.0
+    name: core
+    resources:
+      limits:
+        cpu: "2"
+        memory: 2000Mi
+      requests:
+        cpu: "0.5"
+        memory: 500Mi
+  tgBot:
+    token: '6231993349:AAH7IfnkREGyZr1f98-ybqOiu5hV8hCldF4'
+    chatId: 0
