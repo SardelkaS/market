@@ -4,11 +4,8 @@ import (
 	"auth/api"
 	api_http_model "auth/api/http/model"
 	"auth/config"
-	"auth/internal"
-	"auth/internal/auth"
 	auth_http "auth/internal/auth/delivery/http"
 	common2 "auth/internal/common"
-	"auth/pkg/logger"
 	"fmt"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	loggerMDW "github.com/gofiber/fiber/v2/middleware/logger"
@@ -50,7 +47,7 @@ func (h *httpServer) Init() error {
 	return nil
 }
 
-func (h *httpServer) MapHandlers(app *internal.App) error {
+func (h *httpServer) MapHandlers() error {
 	// ENGINE
 	h.fiber.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
@@ -67,7 +64,7 @@ func (h *httpServer) MapHandlers(app *internal.App) error {
 	})
 
 	// HANDLERS
-	authHandler := auth_http.NewHttpHandler(app.UC["auth"].(auth.UC), app.UC["logger"].(logger.UC))
+	authHandler := auth_http.NewHttpHandler()
 	auth_http.MapRoutes(h.fiber, authHandler)
 
 	return nil

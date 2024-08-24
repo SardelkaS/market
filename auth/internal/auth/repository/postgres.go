@@ -3,16 +3,16 @@ package auth_repository
 import (
 	"auth/internal/auth"
 	"auth/internal/auth/model"
-	"auth/pkg/db"
+	postgres_db "auth/pkg/db/postgres"
 )
 
 type postgres struct {
-	db db.Connection
+	db postgres_db.Connection
 }
 
-func NewPostgresRepo(db db.Connection) auth.Repository {
+func NewPostgresRepo() auth.Repository {
 	return &postgres{
-		db: db,
+		db: postgres_db.Get(),
 	}
 }
 

@@ -3,6 +3,7 @@ package auth_http
 import (
 	"auth/internal/auth"
 	"auth/internal/auth/model"
+	auth_usecase "auth/internal/auth/usecase"
 	"auth/internal/common"
 	"auth/internal/failure"
 	"auth/pkg/logger"
@@ -19,10 +20,10 @@ type httpHandler struct {
 	logger logger.UC
 }
 
-func NewHttpHandler(uc auth.UC, logger logger.UC) auth.HttpHandler {
+func NewHttpHandler() auth.HttpHandler {
 	return httpHandler{
-		uc:     uc,
-		logger: logger,
+		uc:     auth_usecase.NewUC(),
+		logger: logger.New(),
 	}
 }
 

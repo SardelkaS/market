@@ -5,7 +5,27 @@ import (
 	"gopkg.in/yaml.v3"
 	"io"
 	"os"
+	"sync"
 )
+
+var (
+	mux = &sync.RWMutex{}
+	cfg *Config
+)
+
+func Get() *Config {
+	mux.RLock()
+	defer mux.RUnlock()
+
+	return cfg
+}
+
+func Set(c *Config) {
+	mux.Lock()
+	defer mux.Unlock()
+
+	cfg = c
+}
 
 type Config struct {
 	Service struct {
@@ -69,6 +89,8 @@ func LoadConfig(path string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	Set(cfg)
 
 	return cfg, nil
 }

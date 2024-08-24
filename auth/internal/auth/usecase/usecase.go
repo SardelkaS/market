@@ -4,6 +4,7 @@ import (
 	"auth/config"
 	"auth/internal/auth"
 	"auth/internal/auth/model"
+	auth_repository "auth/internal/auth/repository"
 	"auth/internal/failure"
 	"auth/pkg/logger"
 	"auth/pkg/secure"
@@ -21,12 +22,12 @@ type uc struct {
 	logger logger.UC
 }
 
-func NewUC(postgres auth.Repository, redis auth.CacheRepository, cfg *config.Config, logger logger.UC) auth.UC {
+func NewUC() auth.UC {
 	return &uc{
-		repo:   postgres,
-		redis:  redis,
-		cfg:    cfg,
-		logger: logger,
+		repo:   auth_repository.NewPostgresRepo(),
+		redis:  auth_repository.NewRedisClient(),
+		cfg:    config.Get(),
+		logger: logger.New(),
 	}
 }
 

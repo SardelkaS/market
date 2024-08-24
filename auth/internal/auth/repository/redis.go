@@ -4,36 +4,27 @@ import (
 	"auth/config"
 	"auth/internal/auth"
 	"auth/internal/auth/model"
+	"auth/pkg/db/redis"
 	"auth/pkg/logger"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/go-redis/redis"
 	"strings"
 	"time"
 )
 
 type redisClient struct {
-	redisClient *redis.Client
-	config      *config.Config
+	redisClient redis.Client
 	logger      logger.UC
 	accessTime  time.Duration
 	refreshTime time.Duration
 }
 
-func NewRedisClient(cfg *config.Config, logger logger.UC) auth.CacheRepository {
-	c := redis.NewClient(&redis.Options{
-		Addr:     cfg.Redis.Host + ":" + cfg.Redis.Port,
-		Password: cfg.Redis.Password,
-	})
-	if err := c.Ping().Err(); err != nil {
-		panic("Unable to connect to redis " + err.Error())
-	}
-
+func NewRedisClient() auth.CacheRepository {
+	cfg := config.Get()
 	return &redisClient{
-		redisClient: c,
-		config:      cfg,
-		logger:      logger,
+		redisClient: redis.Get(),
+		logger:      logger.New(),
 		accessTime:  time.Second * time.Duration(cfg.Auth.AccessLifeTime),
 		refreshTime: time.Second * time.Duration(cfg.Auth.RefreshLifeTime),
 	}

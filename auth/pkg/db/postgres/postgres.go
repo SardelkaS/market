@@ -1,4 +1,4 @@
-package db
+package postgres
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"log"
+	"sync"
 
 	_ "github.com/jackc/pgx/stdlib" // pgx driver
 	_ "github.com/lib/pq"
@@ -16,6 +17,26 @@ import (
 const (
 	_connectionAttempts = 10
 )
+
+var (
+	conn Connection
+	once = &sync.Once{}
+	mux  = &sync.RWMutex{}
+)
+
+func Get() Connection {
+	mux.RLock()
+	defer mux.RUnlock()
+
+	return conn
+}
+
+func Set(c Connection) {
+	mux.Lock()
+	defer mux.Unlock()
+
+	conn = c
+}
 
 type connection struct {
 	db *pgxpool.Pool
@@ -29,30 +50,37 @@ type Connection interface {
 	Exec(query string, args ...interface{}) (pgconn.CommandTag, error)
 }
 
-func InitPsqlDB(connectionUrl string) (Connection, error) {
-	cfg, err := pgxpool.ParseConfig(connectionUrl)
-	if err != nil {
-		return nil, err
-	}
-
-	var pool *pgxpool.Pool
-	for i := 0; i < _connectionAttempts; i++ {
-		pool, err = pgxpool.NewWithConfig(context.Background(), cfg)
+func InitPsqlDB(connectionUrl string, ctx context.Context) {
+	once.Do(func() {
+		cfg, err := pgxpool.ParseConfig(connectionUrl)
 		if err != nil {
-			log.Printf("ATTEMPT %d ERROR: %s", i+1, err.Error())
-			pool = nil
-		} else {
-			break
+			panic(err)
 		}
-	}
 
-	if pool == nil {
-		return nil, errors.New("cannot connect to postgres")
-	}
+		var pool *pgxpool.Pool
+		for i := 0; i < _connectionAttempts; i++ {
+			pool, err = pgxpool.NewWithConfig(context.Background(), cfg)
+			if err != nil {
+				log.Printf("ATTEMPT %d ERROR: %s", i+1, err.Error())
+				pool = nil
+			} else {
+				break
+			}
+		}
 
-	return &connection{
-		db: pool,
-	}, nil
+		if pool == nil {
+			panic(errors.New("cannot connect to postgres"))
+		}
+
+		Set(&connection{
+			db: pool,
+		})
+
+		go func() {
+			<-ctx.Done()
+			pool.Close()
+		}()
+	})
 }
 
 func (c *connection) Select(dest interface{}, query string, args ...interface{}) error {
